@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>JobEntry - Marketing Manager</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-xxl bg-white p-0">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+            <a href="index.html" class="navbar-brand d-flex align-items-center py-0 px-4 px-lg-5">
+                <h1 class="m-0 text-primary">JumpStartJobs</h1>
+            </a>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="index.html" class="nav-item nav-link">Home</a>
+                    <a href="about.html" class="nav-item nav-link">About</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Jobs</a>
+                        <div class="dropdown-menu rounded-0 m-0">
+                            <a href="job-list.html" class="dropdown-item active">Job List</a>
+                            <a href="category.html" class="dropdown-item">Job Category</a>
+                        </div>
+                    </div>
+                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                </div>
+                <a href="post-job.html" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Post A Job<i class="fa fa-arrow-right ms-3"></i></a>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <!-- Header Start -->
+        <div class="container-xxl py-5 bg-dark page-header mb-5">
+            <div class="container my-5 pt-5 pb-4">
+                <h1 class="display-3 text-white mb-3 animated slideInDown">Marketing Manager</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb text-uppercase">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">Jobs</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Marketing Manager</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- Header End -->
+
+        <!-- Job Detail Section Start -->
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row gy-5 gx-4">
+                    <div class="col-lg-8">
+                        <div class="d-flex align-items-center mb-5">
+                            <img class="flex-shrink-0 img-fluid border rounded" src="img/com-logo-2.jpg" alt="" style="width: 80px; height: 80px;">
+                            <div class="text-start ps-4">
+                                <h3 class="mb-3">Marketing Manager</h3>
+                                <span class="d-block mb-1"><i class="fa fa-map-marker-alt text-primary me-2"></i>New York, USA</span>
+                                <span class="d-block mb-1"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+                                <span class="d-block"><i class="far fa-money-bill-alt text-primary me-2"></i>$150 - $300</span>
+                            </div>
+                        </div>
+
+                        <h4 class="mb-4">Job Description</h4>
+                        <p>We are seeking an innovative and results-driven Marketing Manager to lead our marketing strategies and campaigns. In this role, you will be responsible for crafting and executing data-driven marketing plans that enhance brand visibility, drive customer engagement, and deliver measurable growth.</p>
+
+                        <h4 class="mb-4">Responsibilities</h4>
+                        <ul class="list-unstyled">
+                            <li><i class="fa fa-check text-primary me-3"></i>Develop and implement marketing strategies</li>
+                            <li><i class="fa fa-check text-primary me-3"></i>Analyze market trends</li>
+                            <li><i class="fa fa-check text-primary me-3"></i>Collaborate with cross-functional teams</li>
+                        </ul>
+
+                        <h4 class="mb-4">Apply for the Job</h4>
+                        <form id="applyForm" onsubmit="applyForJob(event)">
+                            <input type="text" id="applicantName" class="form-control mb-3" placeholder="Your Name" required>
+                            <input type="email" id="applicantEmail" class="form-control mb-3" placeholder="Your Email" required>
+                            <input type="url" id="applicantPortfolio" class="form-control mb-3" placeholder="Portfolio Website (optional)">
+                            <textarea id="applicantCoverLetter" class="form-control mb-3" placeholder="Cover Letter" rows="5" required></textarea>
+                            <button class="btn btn-primary w-100">Apply Now</button>
+                        </form>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="bg-light rounded p-4">
+                            <h4 class="mb-4">Job Summary</h4>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Published On: 01 Jan, 2024</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Job Nature: Full Time</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Salary: $150 - $300</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Location: New York, USA</p>
+                            <p><i class="fa fa-angle-right text-primary me-2"></i>Deadline: 01 Jan, 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Job Detail Section End -->
+
+        <!-- Footer Start -->
+        <footer class="container-fluid bg-dark text-white-50 py-5 mt-5">
+            <div class="container text-center">
+                <p>&copy; 2024 JumpStartJobs. All Rights Reserved.</p>
+            </div>
+        </footer>
+        <!-- Footer End -->
+    </div>
+
+    <script>
+        function applyForJob(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('applicantName').value;
+            const email = document.getElementById('applicantEmail').value;
+            const portfolio = document.getElementById('applicantPortfolio').value;
+            const coverLetter = document.getElementById('applicantCoverLetter').value;
+
+            if (!name || !email || !coverLetter) {
+                alert("Please fill in all required fields!");
+                return;
+            }
+
+            const application = {
+                jobTitle: "Marketing Manager",
+                name: name,
+                email: email,
+                portfolio: portfolio,
+                coverLetter: coverLetter
+            };
+
+            const jobApplications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            jobApplications.push(application);
+            localStorage.setItem('jobApplications', JSON.stringify(jobApplications));
+
+            alert("Your application has been submitted successfully!");
+            document.getElementById('applyForm').reset();
+        }
+    </script>
+</body>
+
+</html>
