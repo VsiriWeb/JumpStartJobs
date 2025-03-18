@@ -192,6 +192,8 @@
     function sendEmail() {
         const userEmail = document.getElementById('newsletterEmail').value;
         if (userEmail) {
+		console.log("Captured Email:", userEmail);
+
             emailjs.send("service_JumpStartJobs", "template_zpdm3q7", {
                 to_email: userEmail  // Must match {{to_email}} in your EmailJS template
             })
@@ -205,6 +207,7 @@
             alert("Please enter your email.");
         }
     }
+
 </script>
 
 
