@@ -182,30 +182,33 @@
 
     <!-- JavaScript Libraries -->
 
+<!-- Load EmailJS SDK -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
 <script>
-function sendEmail() {
-    const userEmail = document.getElementById('newsletterEmail').value;
-    if (userEmail) {
-        emailjs.send("service_JumpStartJobs", "template_zpdm3q7", {
-            to_email: userEmail
-        })
-        .then(() => {
-            alert("Email sent successfully!");
-        }, (error) => {
-            alert("Failed to send email. Please try again.");
-            console.error(error);
-        });
-    } else {
-        alert("Please enter your email.");
+    // Initialize with your actual Public Key
+    emailjs.init("public_7xAlkj9hc5XYBZjJj"); // Replace with your EmailJS Public Key
+
+    function sendEmail() {
+        const userEmail = document.getElementById('newsletterEmail').value;
+        if (userEmail) {
+            emailjs.send("service_JumpStartJobs", "template_zpdm3q7", {
+                to_email: userEmail  // Must match {{to_email}} in your EmailJS template
+            })
+            .then(() => {
+                alert("Email sent successfully!");
+            }, (error) => {
+                alert("Failed to send email. Please try again.");
+                console.error(error);
+            });
+        } else {
+            alert("Please enter your email.");
+        }
     }
-}
 </script>
 
-	
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-<script>
-    emailjs.init("public_XXXXXXXXXXXXXXX"); // Replace with your public key
-</script>
+
+
 
 	
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
