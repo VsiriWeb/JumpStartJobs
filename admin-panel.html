@@ -90,7 +90,7 @@
       </div>
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Total Jobs</h5>
+          <h5 class="card-title">Total Available Jobs</h5>
           <p id="totalJobs" class="card-text">0</p>
         </div>
       </div>
@@ -126,6 +126,7 @@
     ];
 
     let rejectedJobs = JSON.parse(localStorage.getItem("rejectedJobs")) || [];
+    let availableJobs = JSON.parse(localStorage.getItem("activeJobs")) || [];
     let users = JSON.parse(localStorage.getItem("users")) || [
       { name: "Alice Johnson" },
       { name: "Bob Smith" },
@@ -139,7 +140,7 @@
 
     function updateStats() {
       document.getElementById('totalUsers').textContent = users.length;
-      document.getElementById('totalJobs').textContent = pendingJobs.length + rejectedJobs.length;
+      document.getElementById('totalJobs').textContent = availableJobs.length;
       document.getElementById('pendingJobs').textContent = pendingJobs.length;
     }
 
@@ -183,8 +184,9 @@
     }
 
     function approveJob(index) {
-      alert(`Approved job: ${pendingJobs[index].title}`);
-      pendingJobs.splice(index, 1);
+      const job = pendingJobs.splice(index, 1)[0];
+      availableJobs.push(job);
+      localStorage.setItem("activeJobs", JSON.stringify(availableJobs));
       saveAll();
       updateDisplay();
     }
