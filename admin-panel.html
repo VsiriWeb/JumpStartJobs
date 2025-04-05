@@ -19,10 +19,6 @@
       padding: 1rem;
     }
 
-    .sidebar h2 {
-      font-size: 1.5rem;
-    }
-
     .sidebar a {
       color: white;
       display: block;
@@ -59,23 +55,15 @@
       color: #2980b9;
       font-weight: bold;
     }
-
-    .job-details p {
-      margin: 0.2rem 0;
-    }
-
-    .job-actions button {
-      margin-right: 10px;
-    }
   </style>
 </head>
 
 <body>
   <div class="sidebar">
     <h2>Admin Panel</h2>
-    <a href="#">Dashboard</a>
-    <a href="#">User Management</a>
-    <a href="#">Job Listings</a>
+    <a href="admin-panel.html">Dashboard</a>
+    <a href="admin-usermanagement.html">User Management</a>
+    <a href="admin-joblistings.html">Job Listings</a>
     <a href="#">Analytics</a>
     <a href="#">System Settings</a>
     <a href="#">Logout</a>
@@ -113,27 +101,15 @@
         card.innerHTML = `
           <div class="job-header">Pending Review</div>
           <div class="job-title">${job.title}</div>
-          <div class="job-details">
-            <p><strong>Company:</strong> ${job.company}</p>
-            <p><strong>Contact:</strong> ${job.contact}</p>
-            <p><strong>Posted:</strong> ${job.posted}</p>
-            <p><strong>Description:</strong><br>${job.description}</p>
-          </div>
-          <div class="job-actions mt-3">
-            <button class="btn btn-success" onclick="approveJob(${index})">✔ Approve</button>
-            <button class="btn btn-danger" onclick="rejectJob(${index})">✖ Reject</button>
-          </div>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Contact:</strong> ${job.contact}</p>
+          <p><strong>Posted:</strong> ${job.posted}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          <button class="btn btn-success">\u2714 Approve</button>
+          <button class="btn btn-danger">\u2716 Reject</button>
         `;
         container.appendChild(card);
       });
-    }
-
-    function approveJob(index) {
-      alert(`Job '${pendingJobs[index].title}' approved.`);
-    }
-
-    function rejectJob(index) {
-      alert(`Job '${pendingJobs[index].title}' rejected.`);
     }
 
     window.onload = loadPendingJobs;
