@@ -146,13 +146,22 @@
 
       const users = JSON.parse(localStorage.getItem("users")) || [];
 
-      const adminUser = users.find(user => user.email === email && user.role === "Admin");
+      const matchedUser = users.find(user => user.email === email && user.password === password);
 
-      if ((email === "admin@gmail.com" && password === "admin") || adminUser) {
+      if (email === "admin@gmail.com" && password === "admin") {
         alert("Welcome, Admin!");
         window.location.href = "admin-panel.html";
+      } else if (matchedUser) {
+        alert(`Welcome, ${matchedUser.role}!`);
+        if (matchedUser.role === "Admin") {
+          window.location.href = "admin-panel.html";
+        } else if (matchedUser.role === "Employer") {
+          window.location.href = "employer-dashboard.html"; // you can make this page
+        } else if (matchedUser.role === "Job Seeker") {
+          window.location.href = "jobseeker-dashboard.html"; // you can make this page
+        }
       } else {
-        alert("Invalid credentials or not authorized.");
+        alert("Invalid credentials or user not found.");
       }
     }
     </script>
