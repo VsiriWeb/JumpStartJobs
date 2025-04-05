@@ -5,15 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - JumpStartJobs</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     body {
       background-color: #f8f9fa;
     }
 
-    .register-container {
+    .container-xxl {
+      padding-top: 80px;
+    }
+
+    .form-wrapper {
       max-width: 600px;
-      margin: 5rem auto;
+      margin: auto;
       padding: 2rem;
       background: white;
       border-radius: 10px;
@@ -23,29 +28,34 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="register-container">
-      <h2 class="text-center mb-4">Register New User</h2>
-      <form id="registerForm" onsubmit="registerUser(event)">
-        <div class="mb-3">
-          <label for="name" class="form-label">Full Name</label>
-          <input type="text" class="form-control" id="name" required>
+  <div class="container-xxl py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="form-wrapper">
+            <h2 class="text-center mb-4">Register New User</h2>
+            <form id="registerForm" onsubmit="registerUser(event)">
+              <div class="mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <select class="form-select" id="role" required>
+                  <option value="Employer">Employer</option>
+                  <option value="Job Seeker">Job Seeker</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary w-100 py-2">Register</button>
+              <p class="text-center mt-3">Already have an account? <a href="login.html">Login</a></p>
+            </form>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email address</label>
-          <input type="email" class="form-control" id="email" required>
-        </div>
-        <div class="mb-3">
-          <label for="role" class="form-label">Role</label>
-          <select class="form-select" id="role" required>
-            <option value="Employer">Employer</option>
-            <option value="Job Seeker">Job Seeker</option>
-            <option value="Admin">Admin</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Register</button>
-        <p class="text-center mt-3">Already have an account? <a href="login.html">Login</a></p>
-      </form>
+      </div>
     </div>
   </div>
 
