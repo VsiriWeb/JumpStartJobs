@@ -35,8 +35,37 @@
       padding: 2rem;
     }
 
-    .card-footer button {
-      margin-left: 5px;
+    .job-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .job-header {
+      background-color: #f5b041;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .job-title {
+      font-size: 1.25rem;
+      color: #2980b9;
+      font-weight: bold;
+    }
+
+    .job-details p {
+      margin: 0.2rem 0;
+    }
+
+    .job-actions button {
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -47,112 +76,67 @@
     <a href="#">Dashboard</a>
     <a href="#">User Management</a>
     <a href="#">Job Listings</a>
+    <a href="#">Analytics</a>
+    <a href="#">System Settings</a>
     <a href="#">Logout</a>
   </div>
 
   <div class="content">
-    <h1>Admin Dashboard</h1>
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">Total Users</h5>
-            <p class="card-text" id="totalUsers">0</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">Active Job Listings</h5>
-            <p class="card-text" id="activeJobs">0</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">Pending Applications</h5>
-            <p class="card-text" id="pendingApps">0</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h2>Recent Job Applications</h2>
-    <div id="applicationsContainer"></div>
-
-    <h2 class="mt-5">Rejected Applications</h2>
-    <div id="rejectedContainer"></div>
-
-    <h2 class="mt-5">Job Listings</h2>
+    <h1>Pending Job Approvals</h1>
     <div id="jobsContainer"></div>
-
-    <h2 class="mt-5">Deleted Jobs</h2>
-    <div id="deletedJobsContainer"></div>
   </div>
 
   <script>
-    // --- Use the original script logic here ---
-    // Preloaded jobs and functions from the previous code provided
-    const preloadedJobs = [
+    const pendingJobs = [
       {
-        title: "Marketing Manager",
-        company: "International Hearts",
-        location: "New York, USA",
-        salary: "$150 - $300",
-        description: "Craft and execute data-driven marketing plans."
+        title: "Data Entry Personnel",
+        company: "Water bottle",
+        contact: "sal@business.com",
+        posted: "Mar 4, 2025",
+        description: "test"
       },
       {
-        title: "Software Engineer",
-        company: "TechCom",
-        location: "Seattle, USA",
-        salary: "$75 - $120",
-        description: "Design and maintain software solutions."
-      },
-      {
-        title: "Product Designer",
-        company: "DataXchange",
-        location: "Austin, USA",
-        salary: "$80 - $150",
-        description: "Craft user-centric designs."
-      },
-      {
-        title: "Creative Director",
-        company: "FuzionSource",
-        location: "San Francisco, USA",
-        salary: "$200 - $400",
-        description: "Lead creative team to deliver content."
+        title: "Reception",
+        company: "Intel",
+        contact: "sal@business.com",
+        posted: "Mar 4, 2025",
+        description: "Ability to multitask in a fast-paced environment"
       }
     ];
 
-    if (!localStorage.getItem('jobListings')) {
-      localStorage.setItem('jobListings', JSON.stringify(preloadedJobs));
-    }
-    if (!localStorage.getItem('deletedJobs')) {
-      localStorage.setItem('deletedJobs', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('jobApplications')) {
-      localStorage.setItem('jobApplications', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('rejectedApplications')) {
-      localStorage.setItem('rejectedApplications', JSON.stringify([]));
+    function loadPendingJobs() {
+      const container = document.getElementById('jobsContainer');
+      container.innerHTML = '';
+      pendingJobs.forEach((job, index) => {
+        const card = document.createElement('div');
+        card.classList.add('job-card');
+        card.innerHTML = `
+          <div class="job-header">Pending Review</div>
+          <div class="job-title">${job.title}</div>
+          <div class="job-details">
+            <p><strong>Company:</strong> ${job.company}</p>
+            <p><strong>Contact:</strong> ${job.contact}</p>
+            <p><strong>Posted:</strong> ${job.posted}</p>
+            <p><strong>Description:</strong><br>${job.description}</p>
+          </div>
+          <div class="job-actions mt-3">
+            <button class="btn btn-success" onclick="approveJob(${index})">✔ Approve</button>
+            <button class="btn btn-danger" onclick="rejectJob(${index})">✖ Reject</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
     }
 
-    function loadAdminData() {
-      document.getElementById('totalUsers').innerText = '14';
-      document.getElementById('activeJobs').innerText = JSON.parse(localStorage.getItem('jobListings')).length;
-      document.getElementById('pendingApps').innerText = JSON.parse(localStorage.getItem('jobApplications')).length;
-      loadApplications();
-      loadRejectedApplicants();
-      loadJobs();
-      loadDeletedJobs();
+    function approveJob(index) {
+      alert(`Job '${pendingJobs[index].title}' approved.`);
     }
 
-    // Add the full JavaScript logic here from the previous provided file.
-    // Skipped here for brevity, but will include functions: loadApplications, approveApplication, rejectApplication, deleteApplication, loadRejectedApplicants, restoreApplication, deleteRejectedApplication, loadJobs, deleteJob, permanentlyDeleteJob, loadDeletedJobs, deleteDeletedJob, restoreJob.
+    function rejectJob(index) {
+      alert(`Job '${pendingJobs[index].title}' rejected.`);
+    }
 
-    window.onload = loadAdminData;
+    window.onload = loadPendingJobs;
   </script>
 </body>
 
