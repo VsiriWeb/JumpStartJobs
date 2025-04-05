@@ -108,7 +108,7 @@
   </div>
 
   <script>
-    const pendingJobs = [
+    let pendingJobs = JSON.parse(localStorage.getItem("pendingJobs")) || [
       {
         title: "Software Engineer",
         company: "Google",
@@ -125,12 +125,17 @@
       }
     ];
 
-    const rejectedJobs = [];
-    const users = [
+    let rejectedJobs = JSON.parse(localStorage.getItem("rejectedJobs")) || [];
+    let users = JSON.parse(localStorage.getItem("users")) || [
       { name: "Alice Johnson" },
       { name: "Bob Smith" },
       { name: "Carla Reed" }
     ];
+
+    function saveAll() {
+      localStorage.setItem("pendingJobs", JSON.stringify(pendingJobs));
+      localStorage.setItem("rejectedJobs", JSON.stringify(rejectedJobs));
+    }
 
     function updateStats() {
       document.getElementById('totalUsers').textContent = users.length;
@@ -180,18 +185,21 @@
     function approveJob(index) {
       alert(`Approved job: ${pendingJobs[index].title}`);
       pendingJobs.splice(index, 1);
+      saveAll();
       updateDisplay();
     }
 
     function rejectJob(index) {
       const job = pendingJobs.splice(index, 1)[0];
       rejectedJobs.push(job);
+      saveAll();
       updateDisplay();
     }
 
     function restoreJob(index) {
       const job = rejectedJobs.splice(index, 1)[0];
       pendingJobs.push(job);
+      saveAll();
       updateDisplay();
     }
 
