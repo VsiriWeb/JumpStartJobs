@@ -1,9 +1,9 @@
 /********** Template CSS **********/
 :root {
-    --primary: #00B074;
-    --secondary: #2B9BFF;
-    --light: #EFFDF5;
-    --dark: #2B3940;
+     --primary: #800000;   /* Garnet */
+    --secondary: #d4afaf; /* Soft garnet-tinted pastel for light backgrounds */
+    --light: #ffffff;     /* White */
+    --dark: #1f1f1f; 
 }
 
 .back-to-top {
