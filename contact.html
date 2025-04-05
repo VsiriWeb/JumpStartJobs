@@ -170,29 +170,30 @@
 
     <!-- EmailJS Form Submission Script -->
     <script type="text/javascript">
-        document.getElementById("contact-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from submitting the traditional way
+       document.getElementById("contact-form").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent form from submitting the traditional way
 
-            var name = document.getElementById("name").value;
-            var email = document.getElementById("email").value;
-            var subject = document.getElementById("subject").value;
-            var message = document.getElementById("message").value;
+    // Hardcode the email values:
+    var name = document.getElementById("name").value;
+    var subject = document.getElementById("subject").value;
+    var message = document.getElementById("message").value;
 
-            var templateParams = {
-                name: name,
-                email: email,
-                subject: subject,
-                message: message
-            };
+    var templateParams = {
+        name: name,
+        email: "vyomsnutgir@gmail.com",  // Hardcoded "From" email
+        subject: subject,
+        message: message
+    };
 
-            emailjs.send('service_JumpStartJobs', 'template_zpdm3q7', templateParams)
-                .then(function(response) {
-                    alert("Message sent successfully!");
-                    document.getElementById("contact-form").reset();
-                }, function(error) {
-                    alert("Failed to send message. Please try again later.");
-                });
+    emailjs.send('service_JumpStartJobs', 'template_zpdm3q7', templateParams)
+        .then(function(response) {
+            alert("Message sent successfully!");
+            document.getElementById("contact-form").reset();
+        }, function(error) {
+            alert("Failed to send message. Please try again later.");
         });
+});
+
     </script>
 </body>
 
