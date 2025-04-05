@@ -55,6 +55,17 @@
       color: #2980b9;
       font-weight: bold;
     }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .stats .card {
+      flex: 1;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -69,26 +80,63 @@
 
   <div class="content">
     <h1>Pending Job Approvals</h1>
+
+    <div class="stats">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Users</h5>
+          <p id="totalUsers" class="card-text">0</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Total Jobs</h5>
+          <p id="totalJobs" class="card-text">0</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Pending Jobs</h5>
+          <p id="pendingJobs" class="card-text">0</p>
+        </div>
+      </div>
+    </div>
+
     <div id="jobsContainer"></div>
+    <h2>Rejected Jobs</h2>
+    <div id="rejectedContainer"></div>
   </div>
 
   <script>
     const pendingJobs = [
       {
-        title: "Data Entry Personnel",
-        company: "Water bottle",
-        contact: "sal@business.com",
-        posted: "Mar 4, 2025",
-        description: "test"
+        title: "Software Engineer",
+        company: "Google",
+        contact: "careers@google.com",
+        posted: "Apr 1, 2025",
+        description: "Develop scalable web services using modern tech."
       },
       {
-        title: "Reception",
-        company: "Intel",
-        contact: "sal@business.com",
-        posted: "Mar 4, 2025",
-        description: "Ability to multitask in a fast-paced environment"
+        title: "Marketing Specialist",
+        company: "Amazon",
+        contact: "hr@amazon.com",
+        posted: "Apr 2, 2025",
+        description: "Plan and execute digital marketing campaigns."
       }
     ];
+
+    const rejectedJobs = [];
+    const users = [
+      { name: "Alice Johnson" },
+      { name: "Bob Smith" },
+      { name: "Carla Reed" }
+    ];
+
+    function updateStats() {
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('totalJobs').textContent = pendingJobs.length + rejectedJobs.length;
+      document.getElementById('pendingJobs').textContent = pendingJobs.length;
+    }
 
     function loadPendingJobs() {
       const container = document.getElementById('jobsContainer');
@@ -103,14 +151,57 @@
           <p><strong>Contact:</strong> ${job.contact}</p>
           <p><strong>Posted:</strong> ${job.posted}</p>
           <p><strong>Description:</strong> ${job.description}</p>
-          <button class="btn btn-success">\u2714 Approve</button>
-          <button class="btn btn-danger">\u2716 Reject</button>
+          <button class="btn btn-success" onclick="approveJob(${index})">\u2714 Approve</button>
+          <button class="btn btn-danger" onclick="rejectJob(${index})">\u2716 Reject</button>
         `;
         container.appendChild(card);
       });
     }
 
-    window.onload = loadPendingJobs;
+    function loadRejectedJobs() {
+      const container = document.getElementById('rejectedContainer');
+      container.innerHTML = '';
+      rejectedJobs.forEach((job, index) => {
+        const card = document.createElement('div');
+        card.classList.add('job-card');
+        card.innerHTML = `
+          <div class="job-header bg-danger">Rejected</div>
+          <div class="job-title">${job.title}</div>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Contact:</strong> ${job.contact}</p>
+          <p><strong>Posted:</strong> ${job.posted}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          <button class="btn btn-primary" onclick="restoreJob(${index})">Restore</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function approveJob(index) {
+      alert(`Approved job: ${pendingJobs[index].title}`);
+      pendingJobs.splice(index, 1);
+      updateDisplay();
+    }
+
+    function rejectJob(index) {
+      const job = pendingJobs.splice(index, 1)[0];
+      rejectedJobs.push(job);
+      updateDisplay();
+    }
+
+    function restoreJob(index) {
+      const job = rejectedJobs.splice(index, 1)[0];
+      pendingJobs.push(job);
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      loadPendingJobs();
+      loadRejectedJobs();
+      updateStats();
+    }
+
+    window.onload = updateDisplay;
   </script>
 </body>
 
