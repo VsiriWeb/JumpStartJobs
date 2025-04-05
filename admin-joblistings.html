@@ -48,10 +48,13 @@
   <div class="content">
     <h1>Job Listings</h1>
     <div id="jobList"></div>
+
+    <h2 class="mt-5">Deleted Jobs</h2>
+    <div id="deletedList"></div>
   </div>
 
   <script>
-    const jobData = [
+    let jobData = JSON.parse(localStorage.getItem("activeJobs")) || [
       {
         title: "Frontend Developer",
         company: "WebTech",
@@ -68,9 +71,17 @@
       }
     ];
 
+    let deletedJobs = JSON.parse(localStorage.getItem("deletedJobs")) || [];
+
+    function saveJobs() {
+      localStorage.setItem("activeJobs", JSON.stringify(jobData));
+      localStorage.setItem("deletedJobs", JSON.stringify(deletedJobs));
+    }
+
     function loadJobs() {
       const container = document.getElementById('jobList');
-      jobData.forEach(job => {
+      container.innerHTML = '';
+      jobData.forEach((job, index) => {
         const card = document.createElement('div');
         card.classList.add('card');
         card.innerHTML = `
@@ -81,14 +92,54 @@
             <p><strong>Location:</strong> ${job.location}</p>
             <p><strong>Salary:</strong> ${job.salary}</p>
             <p><strong>Description:</strong> ${job.description}</p>
-            <button class="btn btn-danger">Delete</button>
+            <button class="btn btn-danger" onclick="deleteJob(${index})">Delete</button>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    window.onload = loadJobs;
+    function loadDeletedJobs() {
+      const container = document.getElementById('deletedList');
+      container.innerHTML = '';
+      deletedJobs.forEach((job, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card', 'border-danger');
+        card.innerHTML = `
+          <div class="card-header bg-danger text-white">
+            <strong>${job.title}</strong> at ${job.company} (Deleted)
+          </div>
+          <div class="card-body">
+            <p><strong>Location:</strong> ${job.location}</p>
+            <p><strong>Salary:</strong> ${job.salary}</p>
+            <p><strong>Description:</strong> ${job.description}</p>
+            <button class="btn btn-primary" onclick="restoreJob(${index})">Restore</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function deleteJob(index) {
+      const job = jobData.splice(index, 1)[0];
+      deletedJobs.push(job);
+      saveJobs();
+      loadJobs();
+      loadDeletedJobs();
+    }
+
+    function restoreJob(index) {
+      const job = deletedJobs.splice(index, 1)[0];
+      jobData.push(job);
+      saveJobs();
+      loadJobs();
+      loadDeletedJobs();
+    }
+
+    window.onload = function () {
+      loadJobs();
+      loadDeletedJobs();
+    }
   </script>
 </body>
 
