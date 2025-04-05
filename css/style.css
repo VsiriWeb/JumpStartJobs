@@ -1,28 +1,11 @@
 /********** Template CSS **********/
-:<style>
-  :root {
-    --bs-primary: #72253A;  /* Maroon */
-    --bs-secondary: #D6A84F;  /* Gold */
-    --bs-light: #F2E3AC;  /* Light gold if needed */
-    --bs-dark: #222222;  /* Optional dark text */
-  }
+:root {
+    --primary: #00B074;
+    --secondary: #2B9BFF;
+    --light: #EFFDF5;
+    --dark: #2B3940;
+}
 
-  .bg-gv-maroon {
-    background-color: #72253A !important;
-  }
-
-  .bg-gv-gold {
-    background-color: #D6A84F !important;
-  }
-
-  .text-gv-maroon {
-    color: #72253A !important;
-  }
-
-  .text-gv-gold {
-    color: #D6A84F !important;
-  }
-</style>
 
 
 .back-to-top {
