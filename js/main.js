@@ -37,34 +37,6 @@
     $('.back-to-top').click(function () {
         $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
         return false;
-    });
-
-
-//email
-function sendMail(event) {
-    event.preventDefault(); // 🔒 Prevent form from reloading the page
-
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const subject = document.getElementById("subject").value;
-    const message = document.getElementById("message").value;
-
-    const templateParams = {
-        name,
-        email,
-        subject,
-        message
-    };
-
-    emailjs.send("service_JumpStartJobs", "template_zpdm3q7", templateParams)
-        .then(function(response) {
-            alert("Message sent successfully!");
-            document.getElementById("contact-form").reset();
-        }, function(error) {
-            alert("Failed to send message.");
-        });
-}
-
 
 
     
