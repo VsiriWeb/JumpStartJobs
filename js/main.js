@@ -42,23 +42,29 @@
 
 //email
 function sendMail(event) {
-    event.preventDefault(); // ⬅️ Stop form from reloading the page
+    event.preventDefault(); // 🔒 Prevent form from reloading the page
 
-    let params = {
-        name : document.getElementById("name").value,
-        email : document.getElementById("email").value,
-        subject : document.getElementById("subject").value,
-        message : document.getElementById("message").value,
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const subject = document.getElementById("subject").value;
+    const message = document.getElementById("message").value;
+
+    const templateParams = {
+        name,
+        email,
+        subject,
+        message
     };
 
-    emailjs.send("service_JumpStartJobs", "template_zpdm3q7", params)
+    emailjs.send("service_JumpStartJobs", "template_zpdm3q7", templateParams)
         .then(function(response) {
-            alert("Email sent!");
+            alert("Message sent successfully!");
             document.getElementById("contact-form").reset();
         }, function(error) {
-            alert("Failed to send email.");
+            alert("Failed to send message.");
         });
 }
+
 
 
     
