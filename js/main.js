@@ -41,16 +41,25 @@
 
 
 //email
-    function sendMail(){
-        let params = {
-            name : document.getElementById("name").value,
-            email : document.getElementById("email").value,
-            subject : document.getElementById("subject").value,
-            message : document.getElementById("message").value,
+function sendMail(event) {
+    event.preventDefault(); // ⬅️ Stop form from reloading the page
 
-        }
-        emailjs.send("service_JumpStartJobs", "template_zpdm3q7",params).then(alert("email sent!")) 
-    }
+    let params = {
+        name : document.getElementById("name").value,
+        email : document.getElementById("email").value,
+        subject : document.getElementById("subject").value,
+        message : document.getElementById("message").value,
+    };
+
+    emailjs.send("service_JumpStartJobs", "template_zpdm3q7", params)
+        .then(function(response) {
+            alert("Email sent!");
+            document.getElementById("contact-form").reset();
+        }, function(error) {
+            alert("Failed to send email.");
+        });
+}
+
 
     
     // Header carousel
