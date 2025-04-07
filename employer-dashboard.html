@@ -155,52 +155,57 @@
   }
 
   function showApplicants() {
-    const list = document.getElementById("applicantList");
-    list.innerHTML = "";
+  const list = document.getElementById("applicantList");
+  list.innerHTML = "";
 
-    const grouped = {};
-    jobs.forEach(job => {
-      if (!job.deleted) {
-        grouped[job.title] = [];
-      }
-    });
+  const grouped = {};
 
-    applicants.forEach((app, i) => {
-      if (grouped.hasOwnProperty(app.jobTitle)) {
-        grouped[app.jobTitle].push({ ...app, index: i });
-      }
-    });
-
-    for (const [title, group] of Object.entries(grouped)) {
-      const jobHeader = document.createElement("li");
-      jobHeader.className = "list-group-item bg-light fw-bold";
-      jobHeader.textContent = `Job: ${title}`;
-      list.appendChild(jobHeader);
-
-      if (group.length === 0) {
-        const empty = document.createElement("li");
-        empty.className = "list-group-item text-muted";
-        empty.textContent = "No applicants yet.";
-        list.appendChild(empty);
-      } else {
-        group.forEach(app => {
-          const li = document.createElement("li");
-          li.className = "list-group-item";
-          li.innerHTML = `
-            <strong>${app.name}</strong> (${app.email})<br>
-            ${app.desc}<br>
-            <a href="${app.resumeData}" download="${app.resumeName}">Download Resume</a><br>
-            <span>Status: <strong>${app.status}</strong></span><br>
-            <button class="btn btn-sm btn-success me-2" onclick="updateApplicantStatus(${app.index}, 'Accepted')">Accept</button>
-            <button class="btn btn-sm btn-danger" onclick="updateApplicantStatus(${app.index}, 'Denied')">Deny</button>
-          `;
-          list.appendChild(li);
-        });
-      }
+  // Group active (non-deleted) jobs
+  jobs.forEach(job => {
+    if (!job.deleted) {
+      grouped[job.title] = [];
     }
+  });
 
-    showSection("applicantsSection");
-  }
+  // Group applicants by job
+  applicants.forEach((app, i) => {
+    if (!app.status) app.status = "Pending"; // Default if not set
+    if (grouped.hasOwnProperty(app.jobTitle)) {
+      grouped[app.jobTitle].push({ ...app, index: i });
+    }
+  });
+
+  // Display each job and its applicants
+  Object.entries(grouped).forEach(([title, group]) => {
+    const jobHeader = document.createElement("li");
+    jobHeader.className = "list-group-item bg-light fw-bold";
+    jobHeader.textContent = `Job: ${title}`;
+    list.appendChild(jobHeader);
+
+    if (group.length === 0) {
+      const empty = document.createElement("li");
+      empty.className = "list-group-item text-muted";
+      empty.textContent = "No applicants yet.";
+      list.appendChild(empty);
+    } else {
+      group.forEach(app => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerHTML = `
+          <strong>${app.name}</strong> (${app.email})<br>
+          ${app.desc || ''}<br>
+          ${app.resumeData ? `<a href="${app.resumeData}" download="${app.resumeName}">Download Resume</a><br>` : ''}
+          <span>Status: <strong>${app.status}</strong></span><br>
+          <button class="btn btn-sm btn-success me-2" onclick="updateApplicantStatus(${app.index}, 'Accepted')">Accept</button>
+          <button class="btn btn-sm btn-danger" onclick="updateApplicantStatus(${app.index}, 'Denied')">Deny</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+  });
+
+  showSection("applicantsSection");
+}
 
   function showJobs() {
     const container = document.getElementById("jobListContainer");
