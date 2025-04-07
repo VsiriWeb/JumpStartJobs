@@ -9,17 +9,24 @@
     body { background-color: #f9f9f9; font-family: 'Segoe UI', sans-serif; }
     .navbar { background-color: #4a90e2; }
     .navbar-brand, .nav-link { color: white !important; }
-    .stat-box, .dashboard-header, .activity-box, .quick-actions { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .stat-box, .dashboard-header, .activity-box, .quick-actions {
+      background: white; border-radius: 10px; padding: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
     .list-group-item { border: none; border-bottom: 1px solid #eee; }
     .quick-actions .btn { width: 100%; margin-bottom: 10px; }
+    .job-editor { background-color: #ffffff; border-radius: 10px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .hidden { display: none; }
   </style>
 </head>
+
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
     <a class="navbar-brand" href="#">JumpStartJobs</a>
     <ul class="navbar-nav ms-auto">
       <li class="nav-item"><a class="nav-link" href="#" onclick="showPostForm()">Post a Job</a></li>
       <li class="nav-item"><a class="nav-link" href="#" onclick="showApplicants()">View Applicants</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showJobs()">Current Jobs</a></li>
       <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
     </ul>
   </nav>
@@ -39,7 +46,7 @@
       <div class="col-lg-4"><div class="quick-actions"><button class="btn btn-outline-primary" onclick="showPostForm()">Post New Job</button><button class="btn btn-outline-secondary" onclick="showApplicants()">Review Applications</button></div></div>
     </div>
 
-    <div id="postJobSection" class="mt-5" style="display:none">
+    <div id="postJobSection" class="mt-5 hidden">
       <h3>Post a Job</h3>
       <form onsubmit="postJob(event)">
         <input class="form-control mb-2" id="jobTitle" placeholder="Job Title" required>
@@ -48,7 +55,7 @@
           <option>Project Management</option><option>Business Development</option><option>Sales & Communication</option>
           <option>Teaching & Education</option><option>Design & Creative</option>
         </select>
-        <label>Salary: $<span id="salaryValue">50000</span></label>
+        <label for="salaryRange">Salary: $<span id="salaryValue">50000</span></label>
         <input type="range" class="form-range mb-2" id="salaryRange" min="20000" max="150000" step="1000" value="50000" oninput="document.getElementById('salaryValue').textContent=this.value">
         <input type="file" class="form-control mb-2" id="jobFile">
         <textarea class="form-control mb-2" id="description" placeholder="Job Description" required></textarea>
@@ -56,9 +63,14 @@
       </form>
     </div>
 
-    <div id="applicantsSection" class="mt-5" style="display:none">
+    <div id="applicantsSection" class="mt-5 hidden">
       <h3>Applicants</h3>
       <ul id="applicantList" class="list-group"></ul>
+    </div>
+
+    <div id="jobsSection" class="mt-5 hidden">
+      <h3>Manage Jobs</h3>
+      <div id="jobListContainer"></div>
     </div>
   </div>
 
@@ -69,7 +81,7 @@
     let accepted = JSON.parse(localStorage.getItem("acceptedApplicants")) || [];
 
     function updateStats() {
-      document.getElementById("activeJobs").textContent = jobs.length;
+      document.getElementById("activeJobs").textContent = jobs.filter(j => !j.deleted).length;
       document.getElementById("totalApplicants").textContent = applicants.length;
       document.getElementById("acceptedApplicants").textContent = accepted.length;
     }
@@ -97,12 +109,13 @@
     function saveJob(job) {
       job.contactEmail = employerEmail;
       job.date = new Date().toLocaleDateString();
+      job.deleted = false;
       jobs.push(job);
       localStorage.setItem("employerJobs", JSON.stringify(jobs));
       logActivity(`Posted new job: ${job.title}`);
       updateStats();
       document.querySelector("form").reset();
-      document.getElementById("postJobSection").style.display = "none";
+      showSection("postJobSection", false);
     }
 
     function logActivity(msg) {
@@ -113,11 +126,14 @@
       log.prepend(item);
     }
 
-    function showPostForm() {
-      document.getElementById("postJobSection").style.display = "block";
-      document.getElementById("applicantsSection").style.display = "none";
+    function showSection(id, show = true) {
+      ["postJobSection", "applicantsSection", "jobsSection"].forEach(sec => {
+        document.getElementById(sec).classList.add("hidden");
+      });
+      if (show) document.getElementById(id).classList.remove("hidden");
     }
 
+    function showPostForm() { showSection("postJobSection"); }
     function showApplicants() {
       const list = document.getElementById("applicantList");
       list.innerHTML = "";
@@ -133,8 +149,35 @@
         `;
         list.appendChild(li);
       });
-      document.getElementById("applicantsSection").style.display = "block";
-      document.getElementById("postJobSection").style.display = "none";
+      showSection("applicantsSection");
+    }
+
+    function showJobs() {
+      const container = document.getElementById("jobListContainer");
+      container.innerHTML = "";
+      jobs.forEach((job, index) => {
+        const jobDiv = document.createElement("div");
+        jobDiv.className = "job-editor";
+
+        jobDiv.innerHTML = `
+          <h5>${job.title} ${job.deleted ? '(Deleted)' : ''}</h5>
+          <p><strong>Category:</strong> ${job.category}</p>
+          <p><strong>Salary:</strong> $${job.salary}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          ${job.file ? `<a href="${job.fileData}" download="${job.file}">Download Attached File</a><br>` : ''}
+          <p><strong>Status:</strong> ${job.deleted ? 'Inactive' : 'Active'}</p>
+          <button class="btn btn-sm btn-${job.deleted ? 'warning' : 'danger'} me-2" onclick="toggleDelete(${index})">${job.deleted ? 'Restore' : 'Delete'}</button>
+        `;
+        container.appendChild(jobDiv);
+      });
+      updateStats();
+      showSection("jobsSection");
+    }
+
+    function toggleDelete(index) {
+      jobs[index].deleted = !jobs[index].deleted;
+      localStorage.setItem("employerJobs", JSON.stringify(jobs));
+      showJobs();
     }
 
     window.onload = () => {
