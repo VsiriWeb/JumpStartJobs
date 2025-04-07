@@ -28,6 +28,7 @@
   <div class="container py-5">
     <h2 class="mb-4">Available Jobs</h2>
     <div id="jobsList"></div>
+
     <h3 class="mt-5">My Applications</h3>
     <ul id="myApplications" class="list-group"></ul>
   </div>
@@ -39,9 +40,13 @@
     function displayJobs() {
       const container = document.getElementById("jobsList");
       container.innerHTML = "";
+
       jobs.forEach((job, index) => {
+        if (job.deleted) return; // Skip deleted jobs
+
         const jobDiv = document.createElement("div");
         jobDiv.className = "job-card";
+
         const fileLink = job.fileData ? `<a download="${job.file}" href="${job.fileData}">Download Job File</a>` : "";
 
         jobDiv.innerHTML = `
@@ -98,9 +103,9 @@
       const list = document.getElementById("myApplications");
       list.innerHTML = "";
       applicants.forEach(app => {
-        const li = document.createElement("li");
         const badgeClass = app.status === "Accepted" ? 'badge-accepted' :
                            app.status === "Rejected" ? 'badge-rejected' : 'badge-submitted';
+        const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerHTML = `
           <strong>${app.jobTitle}</strong><br>
