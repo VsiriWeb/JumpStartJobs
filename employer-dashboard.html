@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
   <meta charset="UTF-8"/>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-   <title>Employer Dashboard - JumpStartJobs</title>
-   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-   <style>
-     body { background-color: #f9f9f9; font-family: 'Segoe UI', sans-serif; }
-     .navbar { background-color: #4a90e2; }
-     .navbar-brand, .nav-link { color: white !important; }
-     .stat-box, .dashboard-header, .activity-box, .quick-actions {
-       background: white; border-radius: 10px; padding: 1.5rem;
-       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-     }
-     .list-group-item { border: none; border-bottom: 1px solid #eee; }
-     .quick-actions .btn { width: 100%; margin-bottom: 10px; }
-     .job-editor { background-color: #ffffff; border-radius: 10px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-     .hidden { display: none; }
-   </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Employer Dashboard - JumpStartJobs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body { background-color: #f9f9f9; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background-color: #4a90e2; }
+    .navbar-brand, .nav-link { color: white !important; }
+    .stat-box, .dashboard-header, .activity-box, .quick-actions {
+      background: white; border-radius: 10px; padding: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .list-group-item { border: none; border-bottom: 1px solid #eee; }
+    .quick-actions .btn { width: 100%; margin-bottom: 10px; }
+    .job-editor { background-color: #ffffff; border-radius: 10px; padding: 1rem; margin-top: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .hidden { display: none; }
+  </style>
+</head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
@@ -40,8 +42,18 @@
     </div>
 
     <div class="row g-4">
-      <div class="col-lg-8"><div class="activity-box"><h5>Recent Activity</h5><ul id="activityLog" class="list-group mt-3"></ul></div></div>
-      <div class="col-lg-4"><div class="quick-actions"><button class="btn btn-outline-primary" onclick="showPostForm()">Post New Job</button><button class="btn btn-outline-secondary" onclick="showApplicants()">Review Applications</button></div></div>
+      <div class="col-lg-8">
+        <div class="activity-box">
+          <h5>Recent Activity</h5>
+          <ul id="activityLog" class="list-group mt-3"></ul>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="quick-actions">
+          <button class="btn btn-outline-primary" onclick="showPostForm()">Post New Job</button>
+          <button class="btn btn-outline-secondary" onclick="showApplicants()">Review Applications</button>
+        </div>
+      </div>
     </div>
 
     <div id="postJobSection" class="mt-5 hidden">
@@ -53,8 +65,8 @@
           <option>Project Management</option><option>Business Development</option><option>Sales & Communication</option>
           <option>Teaching & Education</option><option>Design & Creative</option>
         </select>
-        <label for="salaryRange">Salary: $<span id="salaryValue">50000</span></label>
-        <input type="range" class="form-range mb-2" id="salaryRange" min="20000" max="150000" step="1000" value="50000" oninput="document.getElementById('salaryValue').textContent=this.value">
+        <input class="form-control mb-2" id="salary" placeholder="Salary (e.g., $60,000/year)" required>
+        <input class="form-control mb-2" id="location" placeholder="Location (e.g., Garnet Valley, PA)" required>
         <input type="file" class="form-control mb-2" id="jobFile">
         <textarea class="form-control mb-2" id="description" placeholder="Job Description" required></textarea>
         <button class="btn btn-success">Post Job</button>
@@ -73,169 +85,166 @@
   </div>
 
   <script>
-  const employerEmail = localStorage.getItem("employerEmail") || "employer@example.com";
-  let jobs = JSON.parse(localStorage.getItem("employerJobs")) || [];
-  let applicants = JSON.parse(localStorage.getItem("employerApplicants")) || [];
-  let accepted = JSON.parse(localStorage.getItem("acceptedApplicants")) || [];
+    const employerEmail = localStorage.getItem("employerEmail") || "employer@example.com";
+    let jobs = JSON.parse(localStorage.getItem("employerJobs")) || [];
+    let applicants = JSON.parse(localStorage.getItem("employerApplicants")) || [];
+    let accepted = JSON.parse(localStorage.getItem("acceptedApplicants")) || [];
 
-  function updateStats() {
-    document.getElementById("activeJobs").textContent = jobs.filter(j => !j.deleted).length;
-    document.getElementById("totalApplicants").textContent = applicants.length;
-    document.getElementById("acceptedApplicants").textContent = accepted.length;
-  }
-
-  function postJob(event) {
-    event.preventDefault();
-    const title = document.getElementById("jobTitle").value;
-    const description = document.getElementById("description").value;
-    const category = document.getElementById("jobCategory").value;
-    const salary = document.getElementById("salaryRange").value;
-    const fileInput = document.getElementById("jobFile");
-    const file = fileInput.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        saveJob({ title, description, category, salary, file: file.name, fileData: reader.result });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      saveJob({ title, description, category, salary, file: null, fileData: null });
-    }
-  }
-
-  function saveJob(job) {
-    job.contactEmail = employerEmail;
-    job.date = new Date().toLocaleDateString();
-    job.deleted = false;
-    jobs.push(job);
-    localStorage.setItem("employerJobs", JSON.stringify(jobs));
-    logActivity(`Posted new job: ${job.title}`);
-    updateStats();
-    document.querySelector("form").reset();
-    showSection("postJobSection", false);
-  }
-
-  function logActivity(msg) {
-    const log = document.getElementById("activityLog");
-    const item = document.createElement("li");
-    item.className = "list-group-item";
-    item.innerHTML = `<strong>${msg}</strong><br><small>${new Date().toLocaleTimeString()}</small>`;
-    log.prepend(item);
-  }
-
-  function showSection(id, show = true) {
-    ["postJobSection", "applicantsSection", "jobsSection"].forEach(sec => {
-      document.getElementById(sec).classList.add("hidden");
-    });
-    if (show) document.getElementById(id).classList.remove("hidden");
-  }
-
-  function showPostForm() { showSection("postJobSection"); }
-
-  function updateApplicantStatus(index, status) {
-    applicants[index].status = status;
-    localStorage.setItem("employerApplicants", JSON.stringify(applicants));
-
-    // Manage accepted list
-    const isAccepted = status.toLowerCase() === "accepted";
-    const exists = accepted.some(a => a.email === applicants[index].email && a.jobTitle === applicants[index].jobTitle);
-    
-    if (isAccepted && !exists) {
-      accepted.push(applicants[index]);
-    } else if (!isAccepted && exists) {
-      accepted = accepted.filter(a => !(a.email === applicants[index].email && a.jobTitle === applicants[index].jobTitle));
+    function updateStats() {
+      document.getElementById("activeJobs").textContent = jobs.filter(j => !j.deleted).length;
+      document.getElementById("totalApplicants").textContent = applicants.length;
+      document.getElementById("acceptedApplicants").textContent = accepted.length;
     }
 
-    localStorage.setItem("acceptedApplicants", JSON.stringify(accepted));
-    updateStats();
-    showApplicants(); // refresh the list
-  }
+    function postJob(event) {
+      event.preventDefault();
+      const title = document.getElementById("jobTitle").value;
+      const description = document.getElementById("description").value;
+      const category = document.getElementById("jobCategory").value;
+      const salary = document.getElementById("salary").value;
+      const location = document.getElementById("location").value;
+      const fileInput = document.getElementById("jobFile");
+      const file = fileInput.files[0];
 
-  function showApplicants() {
-  const list = document.getElementById("applicantList");
-  list.innerHTML = "";
-
-  const grouped = {};
-
-  // Group active (non-deleted) jobs
-  jobs.forEach(job => {
-    if (!job.deleted) {
-      grouped[job.title] = [];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          saveJob({ title, description, category, salary, location, file: file.name, fileData: reader.result });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        saveJob({ title, description, category, salary, location, file: null, fileData: null });
+      }
     }
-  });
 
-  // Group applicants by job
-  applicants.forEach((app, i) => {
-    if (!app.status) app.status = "Pending"; // Default if not set
-    if (grouped.hasOwnProperty(app.jobTitle)) {
-      grouped[app.jobTitle].push({ ...app, index: i });
+    function saveJob(job) {
+      job.contactEmail = employerEmail;
+      job.date = new Date().toLocaleDateString();
+      job.deleted = false;
+      jobs.push(job);
+      localStorage.setItem("employerJobs", JSON.stringify(jobs));
+      logActivity(`Posted new job: ${job.title}`);
+      updateStats();
+      document.querySelector("form").reset();
+      showSection("postJobSection", false);
     }
-  });
 
-  // Display each job and its applicants
-  Object.entries(grouped).forEach(([title, group]) => {
-    const jobHeader = document.createElement("li");
-    jobHeader.className = "list-group-item bg-light fw-bold";
-    jobHeader.textContent = `Job: ${title}`;
-    list.appendChild(jobHeader);
+    function logActivity(msg) {
+      const log = document.getElementById("activityLog");
+      const item = document.createElement("li");
+      item.className = "list-group-item";
+      item.innerHTML = `<strong>${msg}</strong><br><small>${new Date().toLocaleTimeString()}</small>`;
+      log.prepend(item);
+    }
 
-    if (group.length === 0) {
-      const empty = document.createElement("li");
-      empty.className = "list-group-item text-muted";
-      empty.textContent = "No applicants yet.";
-      list.appendChild(empty);
-    } else {
-      group.forEach(app => {
-        const li = document.createElement("li");
-        li.className = "list-group-item";
-        li.innerHTML = `
-          <strong>${app.name}</strong> (${app.email})<br>
-          ${app.desc || ''}<br>
-          ${app.resumeData ? `<a href="${app.resumeData}" download="${app.resumeName}">Download Resume</a><br>` : ''}
-          <span>Status: <strong>${app.status}</strong></span><br>
-          <button class="btn btn-sm btn-success me-2" onclick="updateApplicantStatus(${app.index}, 'Accepted')">Accept</button>
-          <button class="btn btn-sm btn-danger" onclick="updateApplicantStatus(${app.index}, 'Denied')">Deny</button>
-        `;
-        list.appendChild(li);
+    function showSection(id, show = true) {
+      ["postJobSection", "applicantsSection", "jobsSection"].forEach(sec => {
+        document.getElementById(sec).classList.add("hidden");
       });
+      if (show) document.getElementById(id).classList.remove("hidden");
     }
-  });
 
-  showSection("applicantsSection");
-}
+    function showPostForm() { showSection("postJobSection"); }
 
-  function showJobs() {
-    const container = document.getElementById("jobListContainer");
-    container.innerHTML = "";
-    jobs.forEach((job, index) => {
-      const jobDiv = document.createElement("div");
-      jobDiv.className = "job-editor";
+    function updateApplicantStatus(index, status) {
+      applicants[index].status = status;
+      localStorage.setItem("employerApplicants", JSON.stringify(applicants));
 
-      jobDiv.innerHTML = `
-        <h5>${job.title} ${job.deleted ? '(Deleted)' : ''}</h5>
-        <p><strong>Category:</strong> ${job.category}</p>
-        <p><strong>Salary:</strong> $${job.salary}</p>
-        <p><strong>Description:</strong> ${job.description}</p>
-        ${job.file ? `<a href="${job.fileData}" download="${job.file}">Download Attached File</a><br>` : ''}
-        <p><strong>Status:</strong> ${job.deleted ? 'Inactive' : 'Active'}</p>
-        <button class="btn btn-sm btn-${job.deleted ? 'warning' : 'danger'} me-2" onclick="toggleDelete(${index})">${job.deleted ? 'Restore' : 'Delete'}</button>
-      `;
-      container.appendChild(jobDiv);
-    });
-    updateStats();
-    showSection("jobsSection");
-  }
+      const isAccepted = status.toLowerCase() === "accepted";
+      const exists = accepted.some(a => a.email === applicants[index].email && a.jobTitle === applicants[index].jobTitle);
 
-  function toggleDelete(index) {
-    jobs[index].deleted = !jobs[index].deleted;
-    localStorage.setItem("employerJobs", JSON.stringify(jobs));
-    showJobs();
-  }
+      if (isAccepted && !exists) {
+        accepted.push(applicants[index]);
+      } else if (!isAccepted && exists) {
+        accepted = accepted.filter(a => !(a.email === applicants[index].email && a.jobTitle === applicants[index].jobTitle));
+      }
 
-  window.onload = () => {
-    updateStats();
-  };
-</script>
+      localStorage.setItem("acceptedApplicants", JSON.stringify(accepted));
+      updateStats();
+      showApplicants();
+    }
+
+    function showApplicants() {
+      const list = document.getElementById("applicantList");
+      list.innerHTML = "";
+
+      const grouped = {};
+      jobs.forEach(job => {
+        if (!job.deleted) {
+          grouped[job.title] = [];
+        }
+      });
+
+      applicants.forEach((app, i) => {
+        if (!app.status) app.status = "Pending";
+        if (grouped.hasOwnProperty(app.jobTitle)) {
+          grouped[app.jobTitle].push({ ...app, index: i });
+        }
+      });
+
+      Object.entries(grouped).forEach(([title, group]) => {
+        const jobHeader = document.createElement("li");
+        jobHeader.className = "list-group-item bg-light fw-bold";
+        jobHeader.textContent = `Job: ${title}`;
+        list.appendChild(jobHeader);
+
+        if (group.length === 0) {
+          const empty = document.createElement("li");
+          empty.className = "list-group-item text-muted";
+          empty.textContent = "No applicants yet.";
+          list.appendChild(empty);
+        } else {
+          group.forEach(app => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.innerHTML = `
+              <strong>${app.name}</strong> (${app.email})<br>
+              ${app.desc || ''}<br>
+              ${app.resumeData ? `<a href="${app.resumeData}" download="${app.resumeName}">Download Resume</a><br>` : ''}
+              <span>Status: <strong>${app.status}</strong></span><br>
+              <button class="btn btn-sm btn-success me-2" onclick="updateApplicantStatus(${app.index}, 'Accepted')">Accept</button>
+              <button class="btn btn-sm btn-danger" onclick="updateApplicantStatus(${app.index}, 'Denied')">Deny</button>
+            `;
+            list.appendChild(li);
+          });
+        }
+      });
+
+      showSection("applicantsSection");
+    }
+
+    function showJobs() {
+      const container = document.getElementById("jobListContainer");
+      container.innerHTML = "";
+      jobs.forEach((job, index) => {
+        const jobDiv = document.createElement("div");
+        jobDiv.className = "job-editor";
+
+        jobDiv.innerHTML = `
+          <h5>${job.title} ${job.deleted ? '(Deleted)' : ''}</h5>
+          <p><strong>Category:</strong> ${job.category}</p>
+          <p><strong>Salary:</strong> ${job.salary}</p>
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          ${job.file ? `<a href="${job.fileData}" download="${job.file}">Download Attached File</a><br>` : ''}
+          <p><strong>Status:</strong> ${job.deleted ? 'Inactive' : 'Active'}</p>
+          <button class="btn btn-sm btn-${job.deleted ? 'warning' : 'danger'} me-2" onclick="toggleDelete(${index})">${job.deleted ? 'Restore' : 'Delete'}</button>
+        `;
+        container.appendChild(jobDiv);
+      });
+      updateStats();
+      showSection("jobsSection");
+    }
+
+    function toggleDelete(index) {
+      jobs[index].deleted = !jobs[index].deleted;
+      localStorage.setItem("employerJobs", JSON.stringify(jobs));
+      showJobs();
+    }
+
+    window.onload = () => {
+      updateStats();
+    };
+  </script>
 </body>
 </html>
