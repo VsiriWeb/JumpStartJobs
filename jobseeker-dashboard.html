@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Seeker Dashboard - JumpStartJobs</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
     body {
       background-color: #f4f7fa;
       font-family: 'Segoe UI', sans-serif;
     }
-
     .navbar {
       background-color: #4a90e2;
     }
-
-    .navbar-brand,
-    .nav-link {
+    .navbar-brand, .nav-link {
       color: white !important;
     }
-
     .job-card {
       background: white;
       border-radius: 10px;
       padding: 1.5rem;
       margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .application-form {
+      margin-top: 1rem;
+      background-color: #f9f9f9;
+      padding: 1rem;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -46,6 +46,9 @@
   <div class="container py-5">
     <h2 class="mb-4">Available Jobs</h2>
     <div id="jobsList"></div>
+
+    <h3 class="mt-5">My Applications</h3>
+    <ul id="myApplications" class="list-group"></ul>
   </div>
 
   <script>
@@ -55,10 +58,12 @@
     function displayJobs() {
       const container = document.getElementById("jobsList");
       container.innerHTML = "";
+
       jobs.forEach((job, index) => {
         const jobDiv = document.createElement("div");
         jobDiv.className = "job-card";
-        const fileLink = job.file ? `<p><strong>Job File:</strong> ${job.file}</p>` : '';
+        const fileLink = job.file ? `<p><strong>Job File:</strong> ${job.file}</p>` : "";
+
         jobDiv.innerHTML = `
           <h5>${job.title}</h5>
           <p><strong>Category:</strong> ${job.category}</p>
@@ -67,43 +72,72 @@
           ${fileLink}
           <p><strong>Contact:</strong> ${job.contactEmail}</p>
           <p><small>Posted on ${job.date}</small></p>
-          <div class="mb-2">
-            <input type="file" id="resume-${index}" class="form-control mb-2" />
-            <button class="btn btn-primary" onclick="applyJob(${index})">Apply with Resume</button>
+          <div class="application-form" id="form-${index}">
+            <div class="mb-2">
+              <input type="text" class="form-control" placeholder="Your Full Name" id="name-${index}" required>
+            </div>
+            <div class="mb-2">
+              <input type="email" class="form-control" placeholder="Your Email" id="email-${index}" required>
+            </div>
+            <div class="mb-2">
+              <input type="file" class="form-control" id="resume-${index}" required>
+            </div>
+            <button class="btn btn-primary" onclick="submitApplication(${index})">Send Application</button>
           </div>
         `;
         container.appendChild(jobDiv);
       });
     }
 
-    function applyJob(index) {
-      const name = prompt("Enter your full name to apply:");
-      if (name) {
-        const fileInput = document.getElementById(`resume-${index}`);
-        const resume = fileInput.files[0];
-        if (!resume) {
-          alert("Please upload your resume before applying.");
-          return;
-        }
+    function submitApplication(index) {
+      const name = document.getElementById(`name-${index}`).value.trim();
+      const email = document.getElementById(`email-${index}`).value.trim();
+      const resumeInput = document.getElementById(`resume-${index}`);
+      const resume = resumeInput.files[0];
 
-        const reader = new FileReader();
-        reader.onload = function () {
-          const job = jobs[index];
-          applicants.push({
-            name,
-            jobTitle: job.title,
-            resumeName: resume.name,
-            resumeData: reader.result // base64 string (optional use)
-          });
-          localStorage.setItem("employerApplicants", JSON.stringify(applicants));
-          alert("Application with resume submitted successfully!");
-        };
-        reader.readAsDataURL(resume);
+      if (!name || !email || !resume) {
+        alert("Please fill in all fields and upload your resume.");
+        return;
       }
+
+      const reader = new FileReader();
+      reader.onload = function () {
+        const job = jobs[index];
+        const application = {
+          name,
+          email,
+          jobTitle: job.title,
+          resumeName: resume.name,
+          resumeData: reader.result,
+          status: "Submitted"
+        };
+
+        applicants.push(application);
+        localStorage.setItem("employerApplicants", JSON.stringify(applicants));
+
+        alert("Application sent successfully!");
+        displayApplications();
+        // Optionally reset the form
+        document.getElementById(`form-${index}`).reset();
+      };
+      reader.readAsDataURL(resume);
     }
 
-    window.onload = displayJobs;
+    function displayApplications() {
+      const list = document.getElementById("myApplications");
+      list.innerHTML = "";
+      applicants.forEach((a, i) => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerHTML = `<strong>${a.jobTitle}</strong> - ${a.name} (${a.email})<br>Status: ${a.status}`;
+        list.appendChild(li);
+      });
+    }
+
+    window.onload = () => {
+      displayJobs();
+      displayApplications();
+    };
   </script>
 </body>
-
 </html>
