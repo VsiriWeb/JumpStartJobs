@@ -56,7 +56,10 @@
         jobDiv.className = "job-card";
         jobDiv.innerHTML = `
           <h5>${job.title}</h5>
-          <p>${job.description}</p>
+          <p><strong>Category:</strong> ${job.category}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          <p><strong>Salary:</strong> $${job.salary}</p>
+          <p><strong>Contact:</strong> ${job.email}</p>
           <p><small>Posted on ${job.date}</small></p>
           <button class="btn btn-primary" onclick="applyJob(${index})">Apply</button>
         `;
