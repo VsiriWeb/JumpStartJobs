@@ -66,6 +66,7 @@
         </select>
         <input class="form-control mb-2" id="salary" placeholder="Salary (e.g., $60,000/year)" required>
         <input class="form-control mb-2" id="location" placeholder="Location (e.g., Garnet Valley, PA)" required>
+        <input class="form-control mb-2" id="contact" placeholder="Contact Email" type="email" required>
         <input type="file" class="form-control mb-2" id="jobFile">
         <textarea class="form-control mb-2" id="description" placeholder="Job Description" required></textarea>
         <button class="btn btn-success">Post Job</button>
@@ -89,17 +90,6 @@
     let applicants = JSON.parse(localStorage.getItem("employerApplicants")) || [];
     let accepted = JSON.parse(localStorage.getItem("acceptedApplicants")) || [];
 
-    if (jobs.length === 0) {
-      jobs = [
-        { title: "Web Developer", category: "Design & Creative", salary: "$70,000", location: "Remote", description: "Build responsive sites.", contact: employerEmail, date: "Apr 1, 2025", deleted: false },
-        { title: "Math Teacher", category: "Teaching & Education", salary: "$50,000", location: "PA", description: "Teach high school math.", contact: employerEmail, date: "Apr 2, 2025", deleted: false },
-        { title: "Sales Associate", category: "Sales & Communication", salary: "$40,000", location: "NY", description: "Retail sales support.", contact: employerEmail, date: "Apr 2, 2025", deleted: false },
-        { title: "HR Intern", category: "Human Resource", salary: "$15/hr", location: "NJ", description: "Assist with onboarding.", contact: employerEmail, date: "Apr 3, 2025", deleted: false },
-        { title: "Project Manager", category: "Project Management", salary: "$90,000", location: "Hybrid", description: "Manage software projects.", contact: employerEmail, date: "Apr 3, 2025", deleted: false }
-      ];
-      localStorage.setItem("activeJobs", JSON.stringify(jobs));
-    }
-
     function updateStats() {
       document.getElementById("activeJobs").textContent = jobs.filter(j => !j.deleted).length;
       document.getElementById("totalApplicants").textContent = applicants.length;
@@ -113,17 +103,18 @@
       const category = document.getElementById("jobCategory").value;
       const salary = document.getElementById("salary").value;
       const location = document.getElementById("location").value;
+      const contact = document.getElementById("contact").value;
       const fileInput = document.getElementById("jobFile");
       const file = fileInput.files[0];
 
       if (file) {
         const reader = new FileReader();
         reader.onload = function () {
-          saveJob({ title, description, category, salary, location, file: file.name, fileData: reader.result });
+          saveJob({ title, description, category, salary, location, contact, file: file.name, fileData: reader.result });
         };
         reader.readAsDataURL(file);
       } else {
-        saveJob({ title, description, category, salary, location, file: null, fileData: null });
+        saveJob({ title, description, category, salary, location, contact, file: null, fileData: null });
       }
     }
 
@@ -158,7 +149,43 @@
 
     function showPostForm() { showSection("postJobSection"); }
 
-    function showApplicants() { /* logic here if needed */ showSection("applicantsSection"); }
+    function showApplicants() {
+      const list = document.getElementById("applicantList");
+      list.innerHTML = "";
+      applicants.forEach((app, index) => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerHTML = `
+          <strong>${app.jobTitle}</strong><br>
+          <em>${app.name}</em> - ${app.email}<br>
+          <small>${app.desc}</small><br>
+          <a href="${app.resumeData}" download="${app.resumeName}">Download Resume</a><br>
+          <span>Status: ${app.status}</span><br>
+          <button class="btn btn-sm btn-success" onclick="updateApplicantStatus(${index}, 'Accepted')">Accept</button>
+          <button class="btn btn-sm btn-danger" onclick="updateApplicantStatus(${index}, 'Denied')">Deny</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="deleteApplicant(${index})">Delete</button>
+        `;
+        list.appendChild(li);
+      });
+      showSection("applicantsSection");
+      updateStats();
+    }
+
+    function updateApplicantStatus(index, status) {
+      applicants[index].status = status;
+      localStorage.setItem("employerApplicants", JSON.stringify(applicants));
+      if (status === "Accepted") {
+        accepted.push(applicants[index]);
+        localStorage.setItem("acceptedApplicants", JSON.stringify(accepted));
+      }
+      showApplicants();
+    }
+
+    function deleteApplicant(index) {
+      applicants.splice(index, 1);
+      localStorage.setItem("employerApplicants", JSON.stringify(applicants));
+      showApplicants();
+    }
 
     function showJobs() {
       const container = document.getElementById("jobListContainer");
@@ -166,7 +193,6 @@
       jobs.forEach((job, index) => {
         const jobDiv = document.createElement("div");
         jobDiv.className = "job-editor";
-
         jobDiv.innerHTML = `
           <h5>${job.title} ${job.deleted ? '(Deleted)' : ''}</h5>
           <p><strong>Category:</strong> ${job.category}</p>
