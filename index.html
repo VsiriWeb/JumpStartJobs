@@ -427,7 +427,7 @@
         <h5 class="text-white mb-4">Newsletter</h5>
         <form id="newsletter-form">
   <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="email" id="email" required placeholder="Your email">
-  <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2" onclick="sendMail()">Sign Up</button>
+  <button class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2" type="button" onclick="sendMail(event)">Sign Up</button>
 </form>
 
 
@@ -435,14 +435,14 @@
     </div>
   </div>
 <script type="text/javascript">
-  function sendMail() {
+  function sendMail(event) {
     const email = document.getElementById("email").value;
 
-    const templateParams = {
+    const templateParms = {
       email: email,
     };
 
-    emailjs.send("service_JumpStartJobs", "template_lceyxim", templateParams)
+    emailjs.send("service_JumpStartJobs", "template_lceyxim", templateParms)
       .then(function () {
         alert("Message sent successfully!");
         document.getElementById("newsletter-form").reset();
