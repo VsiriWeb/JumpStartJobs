@@ -54,93 +54,87 @@
   </div>
 
   <script>
-    let jobData = JSON.parse(localStorage.getItem("activeJobs")) || [
-      {
-        title: "Frontend Developer",
-        company: "WebTech",
-        location: "Remote",
-        salary: "$80k - $100k",
-        description: "Build responsive websites and apps."
-      },
-      {
-        title: "Project Manager",
-        company: "Agile Inc",
-        location: "New York",
-        salary: "$95k - $120k",
-        description: "Manage agile teams and deliver projects."
-      }
-    ];
+  let jobData = JSON.parse(localStorage.getItem("activeJobs")) || [];
+  let deletedJobs = JSON.parse(localStorage.getItem("deletedJobs")) || [];
 
-    let deletedJobs = JSON.parse(localStorage.getItem("deletedJobs")) || [];
+  function saveJobs() {
+    localStorage.setItem("activeJobs", JSON.stringify(jobData));
+    localStorage.setItem("deletedJobs", JSON.stringify(deletedJobs));
+  }
 
-    function saveJobs() {
-      localStorage.setItem("activeJobs", JSON.stringify(jobData));
-      localStorage.setItem("deletedJobs", JSON.stringify(deletedJobs));
-    }
+  function loadJobs() {
+    const container = document.getElementById('jobList');
+    container.innerHTML = '';
+    jobData.forEach((job, index) => {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.innerHTML = `
+        <div class="card-header">
+          <strong>${job.title}</strong> at ${job.company}
+        </div>
+        <div class="card-body">
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Salary:</strong> ${job.salary}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          <button class="btn btn-danger" onclick="deleteJob(${index})">Delete</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
 
-    function loadJobs() {
-      const container = document.getElementById('jobList');
-      container.innerHTML = '';
-      jobData.forEach((job, index) => {
-        const card = document.createElement('div');
-        card.classList.add('card');
-        card.innerHTML = `
-          <div class="card-header">
-            <strong>${job.title}</strong> at ${job.company}
-          </div>
-          <div class="card-body">
-            <p><strong>Location:</strong> ${job.location}</p>
-            <p><strong>Salary:</strong> ${job.salary}</p>
-            <p><strong>Description:</strong> ${job.description}</p>
-            <button class="btn btn-danger" onclick="deleteJob(${index})">Delete</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+  function loadDeletedJobs() {
+    const container = document.getElementById('deletedList');
+    container.innerHTML = '';
+    deletedJobs.forEach((job, index) => {
+      const card = document.createElement('div');
+      card.classList.add('card', 'border-danger');
+      card.innerHTML = `
+        <div class="card-header bg-danger text-white">
+          <strong>${job.title}</strong> at ${job.company} (Deleted)
+        </div>
+        <div class="card-body">
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Salary:</strong> ${job.salary}</p>
+          <p><strong>Description:</strong> ${job.description}</p>
+          <button class="btn btn-primary me-2" onclick="restoreJob(${index})">Restore</button>
+          <button class="btn btn-outline-danger" onclick="permanentlyDeleteJob(${index})">Delete Permanently</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
 
-    function loadDeletedJobs() {
-      const container = document.getElementById('deletedList');
-      container.innerHTML = '';
-      deletedJobs.forEach((job, index) => {
-        const card = document.createElement('div');
-        card.classList.add('card', 'border-danger');
-        card.innerHTML = `
-          <div class="card-header bg-danger text-white">
-            <strong>${job.title}</strong> at ${job.company} (Deleted)
-          </div>
-          <div class="card-body">
-            <p><strong>Location:</strong> ${job.location}</p>
-            <p><strong>Salary:</strong> ${job.salary}</p>
-            <p><strong>Description:</strong> ${job.description}</p>
-            <button class="btn btn-primary" onclick="restoreJob(${index})">Restore</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
+  function deleteJob(index) {
+    const job = jobData.splice(index, 1)[0];
+    deletedJobs.push(job);
+    saveJobs();
+    loadJobs();
+    loadDeletedJobs();
+  }
 
-    function deleteJob(index) {
-      const job = jobData.splice(index, 1)[0];
-      deletedJobs.push(job);
+  function restoreJob(index) {
+    const job = deletedJobs.splice(index, 1)[0];
+    jobData.push(job);
+    saveJobs();
+    loadJobs();
+    loadDeletedJobs();
+  }
+
+  function permanentlyDeleteJob(index) {
+    if (confirm("Are you sure you want to permanently delete this job? This cannot be undone.")) {
+      deletedJobs.splice(index, 1);
       saveJobs();
-      loadJobs();
       loadDeletedJobs();
     }
+  }
 
-    function restoreJob(index) {
-      const job = deletedJobs.splice(index, 1)[0];
-      jobData.push(job);
-      saveJobs();
-      loadJobs();
-      loadDeletedJobs();
-    }
+  window.onload = function () {
+    loadJobs();
+    loadDeletedJobs();
+  }
+</script>
 
-    window.onload = function () {
-      loadJobs();
-      loadDeletedJobs();
-    }
-  </script>
 </body>
 
 </html>
