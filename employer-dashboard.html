@@ -12,50 +12,28 @@
       background-color: #f9f9f9;
       font-family: 'Segoe UI', sans-serif;
     }
-
     .navbar {
       background-color: #4a90e2;
     }
-
     .navbar-brand, .nav-link, .nav-link:focus {
       color: white !important;
       font-weight: 500;
     }
-
-    .dashboard-header {
+    .dashboard-header, .stat-box, .activity-box, .quick-actions {
       background-color: white;
-      padding: 2rem;
       border-radius: 10px;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    .stat-box {
-      background-color: white;
       padding: 1.5rem;
-      border-radius: 10px;
-      text-align: center;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-
     .stat-icon {
       font-size: 1.8rem;
       margin-bottom: 0.5rem;
       color: #4a90e2;
     }
-
-    .activity-box, .quick-actions {
-      background-color: white;
-      border-radius: 10px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
     .list-group-item {
       border: none;
       border-bottom: 1px solid #eee;
     }
-
     .quick-actions .btn {
       width: 100%;
       margin-bottom: 10px;
@@ -68,8 +46,8 @@
     <a class="navbar-brand" href="#">JumpStartJobs</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Post a Job</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">View Applicants</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showPostForm()">Post a Job</a></li>
+        <li class="nav-item"><a class="nav-link" href="#" onclick="showApplicants()">View Applicants</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Analytics</a></li>
         <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
       </ul>
@@ -115,7 +93,7 @@
         <div class="quick-actions">
           <h5>Quick Actions</h5>
           <button class="btn btn-outline-primary" onclick="showPostForm()">Post New Job</button>
-          <button class="btn btn-outline-secondary">Review Applications</button>
+          <button class="btn btn-outline-secondary" onclick="showApplicants()">Review Applications</button>
         </div>
       </div>
     </div>
@@ -133,6 +111,11 @@
         </div>
         <button class="btn btn-success" type="submit">Post Job</button>
       </form>
+    </div>
+
+    <div id="applicantsSection" class="mt-5" style="display:none">
+      <h3>Applicants</h3>
+      <ul id="applicantList" class="list-group"></ul>
     </div>
   </div>
 
@@ -174,6 +157,20 @@
 
     function showPostForm() {
       document.getElementById("postJobSection").style.display = "block";
+      document.getElementById("applicantsSection").style.display = "none";
+    }
+
+    function showApplicants() {
+      const list = document.getElementById("applicantList");
+      list.innerHTML = "";
+      applicants.forEach((a, i) => {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.innerText = `${a.name} applied for ${a.jobTitle}`;
+        list.appendChild(li);
+      });
+      document.getElementById("applicantsSection").style.display = "block";
+      document.getElementById("postJobSection").style.display = "none";
     }
 
     window.onload = () => {
