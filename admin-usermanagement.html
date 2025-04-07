@@ -114,19 +114,30 @@
     }
 
     function loadDeletedUsers() {
-      const table = document.getElementById("deletedUserTable");
-      table.innerHTML = '';
-      deletedUsers.forEach((user, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${user.name}</td>
-          <td>${user.email}</td>
-          <td>${user.role}</td>
-          <td><button class="btn btn-primary" onclick="restoreUser(${index})">Restore</button></td>
-        `;
-        table.appendChild(row);
-      });
-    }
+  const table = document.getElementById("deletedUserTable");
+  table.innerHTML = '';
+  deletedUsers.forEach((user, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${user.name}</td>
+      <td>${user.email}</td>
+      <td>${user.role}</td>
+      <td>
+        <button class="btn btn-primary btn-sm" onclick="restoreUser(${index})">Restore</button>
+        <button class="btn btn-danger btn-sm" onclick="permanentlyDeleteUser(${index})">Delete Permanently</button>
+      </td>
+    `;
+    table.appendChild(row);
+  });
+}
+
+function permanentlyDeleteUser(index) {
+  if (confirm("Are you sure you want to permanently delete this user? This action cannot be undone.")) {
+    deletedUsers.splice(index, 1);
+    saveUsers();
+    loadDeletedUsers();
+  }
+}
 
     function updateName(index, value) {
       users[index].name = value;
