@@ -66,13 +66,15 @@
     const container = document.getElementById('jobList');
     container.innerHTML = '';
     jobData.forEach((job, index) => {
+      const companyText = job.company ? ` at ${job.company}` : "";
       const card = document.createElement('div');
       card.classList.add('card');
       card.innerHTML = `
         <div class="card-header">
-          <strong>${job.title}</strong> at ${job.company}
+          <strong>${job.title}</strong>${companyText}
         </div>
         <div class="card-body">
+          <p><strong>Category:</strong> ${job.category || 'N/A'}</p>
           <p><strong>Location:</strong> ${job.location}</p>
           <p><strong>Salary:</strong> ${job.salary}</p>
           <p><strong>Description:</strong> ${job.description}</p>
@@ -87,13 +89,15 @@
     const container = document.getElementById('deletedList');
     container.innerHTML = '';
     deletedJobs.forEach((job, index) => {
+      const companyText = job.company ? ` at ${job.company}` : "";
       const card = document.createElement('div');
       card.classList.add('card', 'border-danger');
       card.innerHTML = `
         <div class="card-header bg-danger text-white">
-          <strong>${job.title}</strong> at ${job.company} (Deleted)
+          <strong>${job.title}</strong>${companyText} (Deleted)
         </div>
         <div class="card-body">
+          <p><strong>Category:</strong> ${job.category || 'N/A'}</p>
           <p><strong>Location:</strong> ${job.location}</p>
           <p><strong>Salary:</strong> ${job.salary}</p>
           <p><strong>Description:</strong> ${job.description}</p>
@@ -134,6 +138,7 @@
     loadDeletedJobs();
   }
 </script>
+
 
 </body>
 
