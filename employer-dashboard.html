@@ -2,38 +2,49 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Employer Dashboard - JumpStartJobs</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
       background-color: #f9f9f9;
       font-family: 'Segoe UI', sans-serif;
     }
+
     .navbar {
       background-color: #4a90e2;
     }
-    .navbar-brand, .nav-link, .nav-link:focus {
+
+    .navbar-brand,
+    .nav-link,
+    .nav-link:focus {
       color: white !important;
       font-weight: 500;
     }
-    .dashboard-header, .stat-box, .activity-box, .quick-actions {
+
+    .dashboard-header,
+    .stat-box,
+    .activity-box,
+    .quick-actions {
       background-color: white;
       border-radius: 10px;
       padding: 1.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
+
     .stat-icon {
       font-size: 1.8rem;
       margin-bottom: 0.5rem;
       color: #4a90e2;
     }
+
     .list-group-item {
       border: none;
       border-bottom: 1px solid #eee;
     }
+
     .quick-actions .btn {
       width: 100%;
       margin-bottom: 10px;
@@ -103,12 +114,39 @@
       <form onsubmit="postJob(event)">
         <div class="mb-3">
           <label for="jobTitle" class="form-label">Job Title</label>
-          <input type="text" class="form-control" id="jobTitle" required>
+          <input type="text" class="form-control" id="jobTitle" required />
         </div>
+
+        <div class="mb-3">
+          <label for="jobCategory" class="form-label">Category</label>
+          <select class="form-control" id="jobCategory" required>
+            <option>Marketing</option>
+            <option>Customer Service</option>
+            <option>Human Resource</option>
+            <option>Project Management</option>
+            <option>Business Development</option>
+            <option>Sales & Communication</option>
+            <option>Teaching & Education</option>
+            <option>Design & Creative</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="salaryRange" class="form-label">Salary: $<span id="salaryValue">50000</span></label>
+          <input type="range" class="form-range" id="salaryRange" min="20000" max="150000" step="1000" value="50000"
+            oninput="document.getElementById('salaryValue').textContent = this.value" />
+        </div>
+
+        <div class="mb-3">
+          <label for="jobFile" class="form-label">Attach Job Description File (Optional)</label>
+          <input type="file" class="form-control" id="jobFile" />
+        </div>
+
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
           <textarea class="form-control" id="description" required></textarea>
         </div>
+
         <button class="btn btn-success" type="submit">Post Job</button>
       </form>
     </div>
@@ -120,6 +158,7 @@
   </div>
 
   <script>
+    const employerEmail = localStorage.getItem("employerEmail") || "employer@example.com";
     let jobs = JSON.parse(localStorage.getItem("employerJobs")) || [];
     let applicants = JSON.parse(localStorage.getItem("employerApplicants")) || [];
     let accepted = JSON.parse(localStorage.getItem("acceptedApplicants")) || [];
@@ -134,7 +173,21 @@
       event.preventDefault();
       const title = document.getElementById("jobTitle").value;
       const description = document.getElementById("description").value;
-      const job = { title, description, date: new Date().toLocaleDateString() };
+      const category = document.getElementById("jobCategory").value;
+      const salary = document.getElementById("salaryRange").value;
+      const fileInput = document.getElementById("jobFile");
+      const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : null;
+
+      const job = {
+        title,
+        description,
+        category,
+        salary,
+        file: fileName,
+        contactEmail: employerEmail,
+        date: new Date().toLocaleDateString()
+      };
+
       jobs.push(job);
       localStorage.setItem("employerJobs", JSON.stringify(jobs));
       logActivity(`Posted new job: ${title}`);
@@ -176,7 +229,7 @@
     window.onload = () => {
       updateStats();
       loadRecentActivity();
-    }
+    };
   </script>
 </body>
 
