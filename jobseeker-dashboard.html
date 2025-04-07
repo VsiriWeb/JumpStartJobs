@@ -34,7 +34,7 @@
   </div>
 
   <script>
-    let jobs = JSON.parse(localStorage.getItem("employerJobs")) || [];
+    let jobs = JSON.parse(localStorage.getItem("activeJobs")) || [];
     let applicants = JSON.parse(localStorage.getItem("employerApplicants")) || [];
 
     function displayJobs() {
@@ -53,9 +53,9 @@
           <h5>${job.title}</h5>
           <p><strong>Category:</strong> ${job.category}</p>
           <p><strong>Description:</strong> ${job.description}</p>
-          <p><strong>Salary:</strong> $${job.salary}</p>
+          <p><strong>Salary:</strong> ${job.salary}</p>
           <p>${fileLink}</p>
-          <p><strong>Contact:</strong> ${job.contactEmail}</p>
+          <p><strong>Contact:</strong> ${job.contact || job.contactEmail}</p>
           <p><small>Posted on ${job.date}</small></p>
           <button class="btn btn-outline-primary" onclick="toggleForm(${index})">Apply</button>
           <div class="application-form" id="form-${index}">
@@ -104,7 +104,7 @@
       list.innerHTML = "";
       applicants.forEach(app => {
         const badgeClass = app.status === "Accepted" ? 'badge-accepted' :
-                           app.status === "Rejected" ? 'badge-rejected' : 'badge-submitted';
+                           app.status === "Denied" ? 'badge-rejected' : 'badge-submitted';
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.innerHTML = `
