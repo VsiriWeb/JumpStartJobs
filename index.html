@@ -423,9 +423,9 @@
 </div>
     </div>
       </div>
-         <div class="col-lg-4 col-md-6">
+        <div class="col-lg-4 col-md-6">
   <h5 class="text-white mb-4">Newsletter</h5>
-  <form id="newsletter-form" class="position-relative mx-auto" style="max-width: 400px;" onsubmit="sendMail(event)">
+  <div class="position-relative mx-auto" style="max-width: 400px;">
     <input
       id="email"
       type="email"
@@ -434,13 +434,15 @@
       placeholder="Your email"
     />
     <button
-      type="submit"
+      type="button"
+      onclick="sendMail()"
       class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2"
     >
       Sign Up
     </button>
-  </form>
+  </div>
 </div>
+
 
   </div>
 <script type="text/javascript">
