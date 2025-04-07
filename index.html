@@ -426,35 +426,31 @@
       <div class="col-lg-4 col-md-6">
         <h5 class="text-white mb-4">Newsletter</h5>
         <form id="newsletter-form">
-  <div class="position-relative mx-auto" style="max-width: 400px;">
-    <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" id="email" type="email" placeholder="email" required>
-    <button type="submit" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-  </div>
+  <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="email" id="email" required placeholder="Your email">
+  <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2" onclick="sendMail()">Sign Up</button>
 </form>
+
 
       </div>
     </div>
   </div>
 <script type="text/javascript">
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("newsletter-form").addEventListener("submit", function (event) {
+  function sendMail() {
+    const email = document.getElementById("email").value;
 
-      const email = document.getElementById("email").value;
+    const templateParams = {
+      email: email,
+    };
 
-      const templateParams = {
-        email: email,
-      };
-
-      emailjs.send("service_JumpStartJobs", "template_lceyxim", templateParams)
-        .then(function () {
-          alert("Message sent successfully!");
-          document.getElementById("newsletter-form").reset();
-        }, function (error) {
-          alert("Failed to send message.");
-          console.error("EmailJS error:", error);
-        });
-    });
-  });
+    emailjs.send("service_JumpStartJobs", "template_lceyxim", templateParams)
+      .then(function () {
+        alert("Message sent successfully!");
+        document.getElementById("newsletter-form").reset();
+      }, function (error) {
+        alert("Failed to send message.");
+        console.error("EmailJS error:", error);
+      });
+  }
 </script>
 
 </div>
