@@ -1,52 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Job Seeker Dashboard - JumpStartJobs</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <style>
-    body {
-      background-color: #f4f7fa;
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .navbar {
-      background-color: #4a90e2;
-    }
-    .navbar-brand, .nav-link {
-      color: white !important;
-    }
-    .job-card {
-      background: white;
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    .application-form {
-      margin-top: 1rem;
-      background-color: #f9f9f9;
-      padding: 1rem;
-      border-radius: 8px;
-    }
+    body { background-color: #f4f7fa; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background-color: #4a90e2; }
+    .navbar-brand, .nav-link { color: white !important; }
+    .job-card { background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .application-form { margin-top: 1rem; background-color: #f9f9f9; padding: 1rem; border-radius: 8px; display: none; }
+    .badge-submitted { background-color: #ffc107; }
+    .badge-accepted { background-color: #28a745; }
+    .badge-rejected { background-color: #dc3545; }
   </style>
 </head>
-
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark px-4">
     <a class="navbar-brand" href="#">JumpStartJobs</a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
-      </ul>
-    </div>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
+    </ul>
   </nav>
 
   <div class="container py-5">
     <h2 class="mb-4">Available Jobs</h2>
     <div id="jobsList"></div>
-
     <h3 class="mt-5">My Applications</h3>
     <ul id="myApplications" class="list-group"></ul>
   </div>
@@ -58,78 +39,76 @@
     function displayJobs() {
       const container = document.getElementById("jobsList");
       container.innerHTML = "";
-
       jobs.forEach((job, index) => {
         const jobDiv = document.createElement("div");
         jobDiv.className = "job-card";
-        const fileLink = job.file ? `<p><strong>Job File:</strong> ${job.file}</p>` : "";
+        const fileLink = job.fileData ? `<a download="${job.file}" href="${job.fileData}">Download Job File</a>` : "";
 
         jobDiv.innerHTML = `
           <h5>${job.title}</h5>
           <p><strong>Category:</strong> ${job.category}</p>
           <p><strong>Description:</strong> ${job.description}</p>
           <p><strong>Salary:</strong> $${job.salary}</p>
-          ${fileLink}
+          <p>${fileLink}</p>
           <p><strong>Contact:</strong> ${job.contactEmail}</p>
           <p><small>Posted on ${job.date}</small></p>
+          <button class="btn btn-outline-primary" onclick="toggleForm(${index})">Apply</button>
           <div class="application-form" id="form-${index}">
-            <div class="mb-2">
-              <input type="text" class="form-control" placeholder="Your Full Name" id="name-${index}" required>
-            </div>
-            <div class="mb-2">
-              <input type="email" class="form-control" placeholder="Your Email" id="email-${index}" required>
-            </div>
-            <div class="mb-2">
-              <input type="file" class="form-control" id="resume-${index}" required>
-            </div>
-            <button class="btn btn-primary" onclick="submitApplication(${index})">Send Application</button>
+            <input class="form-control mb-2" id="name-${index}" placeholder="Your Name">
+            <input class="form-control mb-2" id="email-${index}" type="email" placeholder="Your Email">
+            <textarea class="form-control mb-2" id="desc-${index}" placeholder="Description / Skills"></textarea>
+            <input type="file" class="form-control mb-2" id="resume-${index}">
+            <button class="btn btn-success" onclick="submitApplication(${index})">Send Application</button>
           </div>
         `;
         container.appendChild(jobDiv);
       });
     }
 
+    function toggleForm(index) {
+      document.getElementById(`form-${index}`).style.display = "block";
+    }
+
     function submitApplication(index) {
       const name = document.getElementById(`name-${index}`).value.trim();
       const email = document.getElementById(`email-${index}`).value.trim();
-      const resumeInput = document.getElementById(`resume-${index}`);
-      const resume = resumeInput.files[0];
-
-      if (!name || !email || !resume) {
-        alert("Please fill in all fields and upload your resume.");
-        return;
-      }
+      const desc = document.getElementById(`desc-${index}`).value.trim();
+      const resumeFile = document.getElementById(`resume-${index}`).files[0];
+      if (!name || !email || !desc || !resumeFile) return alert("Fill in all fields & upload resume.");
 
       const reader = new FileReader();
       reader.onload = function () {
         const job = jobs[index];
-        const application = {
-          name,
-          email,
+        const app = {
+          name, email, desc,
           jobTitle: job.title,
-          resumeName: resume.name,
+          resumeName: resumeFile.name,
           resumeData: reader.result,
           status: "Submitted"
         };
-
-        applicants.push(application);
+        applicants.push(app);
         localStorage.setItem("employerApplicants", JSON.stringify(applicants));
-
-        alert("Application sent successfully!");
+        alert("Application Submitted!");
         displayApplications();
-        // Optionally reset the form
-        document.getElementById(`form-${index}`).reset();
       };
-      reader.readAsDataURL(resume);
+      reader.readAsDataURL(resumeFile);
     }
 
     function displayApplications() {
       const list = document.getElementById("myApplications");
       list.innerHTML = "";
-      applicants.forEach((a, i) => {
+      applicants.forEach(app => {
         const li = document.createElement("li");
+        const badgeClass = app.status === "Accepted" ? 'badge-accepted' :
+                           app.status === "Rejected" ? 'badge-rejected' : 'badge-submitted';
         li.className = "list-group-item";
-        li.innerHTML = `<strong>${a.jobTitle}</strong> - ${a.name} (${a.email})<br>Status: ${a.status}`;
+        li.innerHTML = `
+          <strong>${app.jobTitle}</strong><br>
+          <em>${app.name}</em> - ${app.email}<br>
+          <small>${app.desc}</small><br>
+          <a download="${app.resumeName}" href="${app.resumeData}">Download Resume</a><br>
+          <span class="badge ${badgeClass}">${app.status}</span>
+        `;
         list.appendChild(li);
       });
     }
