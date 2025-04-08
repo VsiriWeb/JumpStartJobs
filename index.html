@@ -157,132 +157,65 @@
         </div>
         <!-- About End -->
 
-
-        <!-- Jobs Start -->
-            <!-- Static Job Listings Example. Dynamic listing loads in job-list.html -->
+       <!-- Jobs Start -->
 <div class="container-xxl py-5">
   <div class="container">
     <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Listings</h1>
-    <div class="row justify-content-center">
-      <div class="col-lg-10">
-        <!-- Job Card -->
-        <div class="job-item p-4 mb-4 border rounded shadow-sm">
-          <h4 class="mb-2">Software Engineer</h4>
-          <p class="mb-1"><strong>Location:</strong> Seattle, USA</p>
-          <p class="mb-1"><strong>Category:</strong> Project Management</p>
-          <p class="mb-3"><strong>Salary:</strong> $75 - $120</p>
-          <a class="btn btn-primary" href="#">Apply Now</a>
-        </div>
-
-        <!-- Job Card -->
-        <div class="job-item p-4 mb-4 border rounded shadow-sm">
-          <h4 class="mb-2">Marketing Manager</h4>
-          <p class="mb-1"><strong>Location:</strong> New York, USA</p>
-          <p class="mb-1"><strong>Category:</strong> Marketing</p>
-          <p class="mb-3"><strong>Salary:</strong> $150 - $300</p>
-          <a class="btn btn-primary" href="#">Apply Now</a>
-        </div>
-
-        <!-- Job Card -->
-        <div class="job-item p-4 mb-4 border rounded shadow-sm">
-          <h4 class="mb-2">Product Designer</h4>
-          <p class="mb-1"><strong>Location:</strong> Austin, USA (Remote)</p>
-          <p class="mb-1"><strong>Category:</strong> Design & Creative</p>
-          <p class="mb-3"><strong>Salary:</strong> $80 - $150</p>
-          <a class="btn btn-primary" href="#">Apply Now</a>
-        </div>
-
-        <!-- Job Card -->
-        <div class="job-item p-4 mb-4 border rounded shadow-sm">
-          <h4 class="mb-2">Creative Director</h4>
-          <p class="mb-1"><strong>Location:</strong> San Francisco, USA</p>
-          <p class="mb-1"><strong>Category:</strong> Design & Creative</p>
-          <p class="mb-3"><strong>Salary:</strong> $200 - $400</p>
-          <a class="btn btn-primary" href="#">Apply Now</a>
-        </div>
-
-        <!-- Job Card -->
-        <div class="job-item p-4 mb-4 border rounded shadow-sm">
-          <h4 class="mb-2">Wordpress Developer</h4>
-          <p class="mb-1"><strong>Location:</strong> Chicago, USA</p>
-          <p class="mb-1"><strong>Category:</strong> Design & Creative</p>
-          <p class="mb-3"><strong>Salary:</strong> $60 - $120</p>
-          <a class="btn btn-primary" href="#">Apply Now</a>
-        </div>
-      </div>
-    </div>
+    <div class="row g-4" id="jobListContainer"></div>
   </div>
 </div>
-
-
-        <!-- Jobs End -->
+<!-- Jobs End -->
     <!-- Category Start -->
-        <!-- Browse By Category Section -->
+<div class="container-xxl py-5">
+  <div class="container">
+    <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Explore By Category</h1>
+    <div class="row g-4" id="categoryContainer"></div>
+  </div>
+</div>
+<!-- Category End -->
+<script>
+  const jobList = (JSON.parse(localStorage.getItem("activeJobs")) || []).filter(j => !j.deleted);
+  jobList.sort(() => Math.random() - 0.5);
 
-        <div class="container-xxl py-5">
-            <div class="container">
-                <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Explore By Category</h1>
-                <div class="row g-4">
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-mail-bulk text-primary mb-4"></i>
-                            <h6 class="mb-3">Marketing</h6>
-                            <p class="mb-0">11 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-headset text-primary mb-4"></i>
-                            <h6 class="mb-3">Customer Service</h6>
-                            <p class="mb-0">4 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-user-tie text-primary mb-4"></i>
-                            <h6 class="mb-3">Human Resource</h6>
-                            <p class="mb-0">6 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-tasks text-primary mb-4"></i>
-                            <h6 class="mb-3">Project Management</h6>
-                            <p class="mb-0">8 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-chart-line text-primary mb-4"></i>
-                            <h6 class="mb-3">Business Development</h6>
-                            <p class="mb-0">9 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-hands-helping text-primary mb-4"></i>
-                            <h6 class="mb-3">Sales & Communication</h6>
-                            <p class="mb-0">8 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-book-reader text-primary mb-4"></i>
-                            <h6 class="mb-3">Teaching & Education</h6>
-                            <p class="mb-0">5 Open Positions</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                        <a class="cat-item rounded p-4" href="">
-                            <i class="fa fa-3x fa-drafting-compass text-primary mb-4"></i>
-                            <h6 class="mb-3">Design & Creative</h6>
-                            <p class="mb-0">3 Open Positions</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Category End -->
+  const jobContainer = document.getElementById("jobListContainer");
+  const catContainer = document.getElementById("categoryContainer");
+
+  const categoryMap = {};
+
+  jobList.forEach(job => {
+    const jobDiv = document.createElement("div");
+    jobDiv.className = "col-md-6";
+    jobDiv.innerHTML = `
+      <div class="job-item p-4 mb-4 border rounded shadow-sm h-100">
+        <h4 class="mb-2">${job.title}</h4>
+        <p class="mb-1"><strong>Location:</strong> ${job.location}</p>
+        <p class="mb-1"><strong>Category:</strong> ${job.category}</p>
+        <p class="mb-1"><strong>Salary:</strong> ${job.salary}</p>
+        <p class="mb-3">${job.description}</p>
+        <a class="btn btn-primary" href="login.html">Apply Now</a>
+      </div>
+    `;
+    jobContainer.appendChild(jobDiv);
+
+    if (!categoryMap[job.category]) categoryMap[job.category] = [];
+    categoryMap[job.category].push(job.title);
+  });
+
+  Object.entries(categoryMap).forEach(([category, titles], idx) => {
+    const col = document.createElement("div");
+    col.className = "col-lg-3 col-sm-6 wow fadeInUp";
+    col.setAttribute("data-wow-delay", `${0.1 * (idx % 4)}s`);
+    col.innerHTML = `
+      <a class="cat-item rounded p-4" href="category.html">
+        <i class="fa fa-3x fa-briefcase text-primary mb-4"></i>
+        <h6 class="mb-3">${category}</h6>
+        <p class="mb-0">${titles.length} Open Position${titles.length > 1 ? 's' : ''}</p>
+      </a>
+    `;
+    catContainer.appendChild(col);
+  });
+</script>
+
 
         <!-- Testimonial Start -->
         <!-- Testimonials From Clients -->
