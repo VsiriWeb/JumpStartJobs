@@ -124,11 +124,12 @@
     }
 
     function restoreJob(index) {
-      const job = rejectedJobs.splice(index, 1)[0];
-      pendingJobs.push(job);
-      saveAll();
-      updateDisplay();
-    }
+  const job = rejectedJobs.splice(index, 1)[0];
+  pendingJobs.push(job);
+  localStorage.setItem("rejectedJobs", JSON.stringify(rejectedJobs)); // ✅ Save updated rejectedJobs
+  saveAll(); // ✅ Save updated pendingJobs too
+  updateDisplay();
+}
 
     function updateDisplay() {
       loadPendingJobs();
