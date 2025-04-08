@@ -148,17 +148,29 @@
         "Business Development", "Sales & Communication", "Teaching & Education", "Design & Creative"
       ];
 
+      const icons = {
+        "Marketing": "fa-chart-line",
+        "Customer Service": "fa-headset",
+        "Human Resource": "fa-user-tie",
+        "Project Management": "fa-tasks",
+        "Business Development": "fa-briefcase",
+        "Sales & Communication": "fa-hands-helping",
+        "Teaching & Education": "fa-book-reader",
+        "Design & Creative": "fa-drafting-compass"
+      };
+
       const container = document.getElementById("categoryContainer");
 
       categories.forEach((cat, i) => {
         const jobsInCat = jobs.filter(job => job.category === cat && !job.deleted);
+        const icon = icons[cat] || "fa-briefcase";
         const card = document.createElement("div");
         card.className = "col-lg-3 col-sm-6 wow fadeInUp";
         card.setAttribute("data-wow-delay", `${0.1 + i * 0.2}s`);
 
         card.innerHTML = `
           <div class="cat-item rounded p-4">
-            <i class="fa fa-3x fa-briefcase text-primary mb-4"></i>
+            <i class="fa fa-3x ${icon} text-primary mb-4"></i>
             <h6 class="mb-3">${cat}</h6>
             <p class="mb-0">${jobsInCat.length} Open Position${jobsInCat.length !== 1 ? 's' : ''}</p>
             <ul style="font-size: 0.85rem; margin-top: 10px; padding-left: 1rem;">
