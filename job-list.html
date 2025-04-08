@@ -85,9 +85,7 @@
         <div class="container-xxl py-5">
             <div class="container">
                 <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Job Listings</h1>
-                <div class="row justify-content-center">
-                    <div class="col-lg-10" id="jobListContainer"></div>
-                </div>
+                <div class="row g-4" id="jobListContainer"></div>
             </div>
         </div>
         <!-- Jobs End -->
@@ -149,17 +147,19 @@
       let count = 0;
 
       jobs.forEach(job => {
-        if (count >= 5 || shownCategories.has(job.category)) return;
+        if (count >= 4 || shownCategories.has(job.category)) return;
 
         const div = document.createElement("div");
-        div.className = "job-item p-4 mb-4 border rounded shadow-sm";
+        div.className = "col-md-6";
         div.innerHTML = `
-          <h4 class="mb-2">${job.title}</h4>
-          <p class="mb-1"><strong>Location:</strong> ${job.location}</p>
-          <p class="mb-1"><strong>Category:</strong> ${job.category}</p>
-          <p class="mb-3"><strong>Salary:</strong> ${job.salary}</p>
-          <p class="mb-3">${job.description}</p>
-          <a class="btn btn-primary" href="login.html">Apply Now</a>
+          <div class="job-item p-4 mb-4 border rounded shadow-sm h-100">
+            <h4 class="mb-2">${job.title}</h4>
+            <p class="mb-1"><strong>Location:</strong> ${job.location}</p>
+            <p class="mb-1"><strong>Category:</strong> ${job.category}</p>
+            <p class="mb-1"><strong>Salary:</strong> ${job.salary}</p>
+            <p class="mb-3">${job.description}</p>
+            <a class="btn btn-primary" href="login.html">Apply Now</a>
+          </div>
         `;
         container.appendChild(div);
         shownCategories.add(job.category);
