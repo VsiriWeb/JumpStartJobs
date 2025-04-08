@@ -171,6 +171,9 @@
   <div class="container">
     <h1 class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">Explore By Category</h1>
     <div class="row g-4" id="categoryContainer"></div>
+    <div class="text-center mt-4">
+      <a class="btn btn-outline-primary" href="login.html">Apply Now</a>
+    </div>
   </div>
 </div>
 <!-- Category End -->
@@ -207,7 +210,6 @@
         <ul style="font-size: 0.85rem; margin-top: 10px; padding-left: 1rem;">
           ${jobsInCat.slice(0, 2).map(j => `<li>${j.title}</li>`).join("") || '<li>No jobs yet</li>'}
         </ul>
-        <a class="btn btn-sm btn-outline-primary mt-2" href="login.html">Apply Now</a>
       </div>
     `;
     catContainer.appendChild(card);
